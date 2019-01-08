@@ -46,10 +46,10 @@ class Camera(Plugin):
 
         image = p.getCameraImage(self.resolution[0], self.resolution[1], T_world_cam.T.flatten(), self.projection_matrix)
 
-        rgb = np.array(image[2]).reshape([self.resolution[1], self.resolution[0], 4])[:, :, :3] / 255.  # discard the alpha channel and normalise to [0 1]
+        rgb = image[2].reshape([self.resolution[1], self.resolution[0], 4])[:, :, :3] / 255.  # discard the alpha channel and normalise to [0 1]
 
         # the depth buffer is normalised to [0 1] whereas NDC coords require [-1 1] ref: https://bit.ly/2rcXidZ
-        depth_ndc = np.array(image[3]) * 2 - 1
+        depth_ndc = image[3] * 2 - 1
 
         # recover eye coordinate depth using the projection matrix ref: https://bit.ly/2vZJCsx
         depth = self.K[2,3] / (self.K[3,2] * depth_ndc - self.K[2,2])

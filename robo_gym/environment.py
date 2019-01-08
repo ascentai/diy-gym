@@ -8,6 +8,33 @@ from config import Configuration
 from model import Model
 from plugins.plugin import Plugin, Receptor
 
+import time
+
+def timeit(method):
+    def timed(*args, **kw):
+        ts = time.time()
+        result = method(*args, **kw)
+        te = time.time()
+        if 'log_time' in kw:
+            name = kw.get('log_name', method.__name__.upper())
+            kw['log_time'][name] = int((te - ts) * 1000)
+        else:
+            print('%r  %2.2f ms' % (method.__name__, (te - ts) * 1000))
+        return result
+    return timed
+
+
+
+def walk_dictionary(dictionary):
+    cumulant = 0
+    for element in dictionary.values():
+        if isinstance(element, dict):
+            cumulant += walk_dictionary(element)
+        else:
+            cumulant += element
+
+    return cumulant
+
 
 class RoboGym(gym.Env, Receptor):
     def __init__(self, config_file):
@@ -17,6 +44,8 @@ class RoboGym(gym.Env, Receptor):
 
         config = Configuration.from_file(config_file)
 
+        self.sum_rewards = config.get('sum_rewards', True)
+        self.sum_terminals = config.get('sum_terminals', True)
         self.sub_steps = config.get('substeps', 200)
 
         if config.get('render', True):
@@ -62,15 +91,19 @@ class RoboGym(gym.Env, Receptor):
 
         return self.observe()
 
-    def is_terminal(self, observation):
-        return {k: v for k,v in {name: receptor.get_is_terminals(observation) for name, receptor in self.receptors.items()}.items() if len(v)}
-
+    @timeit
     def observe(self):
         return {k: v for k,v in {name: receptor.get_observations() for name, receptor in self.receptors.items()}.items() if len(v)}
 
     def reward(self, observation):
-        return {k: v for k,v in {name: receptor.get_rewards(observation) for name, receptor in self.receptors.items()}.items() if len(v)}
+        ret = {k: v for k,v in {name: receptor.get_rewards(observation) for name, receptor in self.receptors.items()}.items() if len(v)}
+        return walk_dictionary(ret) if self.sum_rewards else ret
 
+    def is_terminal(self, observation):
+        ret = {k: v for k,v in {name: receptor.get_is_terminals(observation) for name, receptor in self.receptors.items()}.items() if len(v)}
+        return walk_dictionary(ret) > 0 if self.sum_terminals else ret
+
+    @timeit
     def step(self, action):
         for receptor_name, receptor_action in action.items():
             self.receptors[receptor_name].update_plugins(receptor_action)
@@ -88,16 +121,16 @@ class RoboGym(gym.Env, Receptor):
 
 if __name__ == '__main__':
 
-    env = RoboGym('/home/tom/repos/robo-gym/robo_gym/data/arm_wrestle.xml')
+    env = RoboGym('/home/tom/repos/robo-gym/robo_gym/data/environments/robot_room.xml')
     a = env.action_space.sample()
 
-    a['jaco']['position_controller']['orientation'] = np.array([-0.01, 0.01, 0.01])
-    a['jaco']['position_controller']['position'] = np.array([0.0, 0.0, 0.0])
-    a['ur5']['position_controller']['orientation'] = np.array([-0.01, 0.01, 0.01])
-    a['ur5']['position_controller']['position'] = np.array([0.0, 0.0, 0.0])
+    a['robot']['position_controller']['orientation'] = np.array([-0.01, 0.01, 0.01])
+    a['robot']['position_controller']['position'] = np.array([0.0, 0.0, 0.0])
+    # a['ur5']['position_controller']['orientation'] = np.array([-0.01, 0.01, 0.01])
+    # a['ur5']['position_controller']['position'] = np.array([0.0, 0.0, 0.0])
 
     for _ in range(10000):
         obs, rew, term, info = env.step(a)
 
-        if any in term: 
+        if term:
             env.reset()

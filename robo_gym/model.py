@@ -7,7 +7,7 @@ from plugins.plugin import Plugin, Receptor
 
 urdf_path = [
     '',
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/'),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/models/'),
     pybullet_data.getDataPath()
 ]
 

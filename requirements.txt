@@ -1,4 +1,4 @@
 numpy
 gym>=0.10
-pybullet>=1.9.3
+pybullet==1.7.3
 
