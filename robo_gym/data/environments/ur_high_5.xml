@@ -1,33 +1,31 @@
 <?xml version="1.0"?>
 <environment>
-    <episode_length>300</episode_length>
+    <episode_length>500</episode_length>
     <substeps>200</substeps>
     <render>true</render>
 
     <model name="plane">
         <urdf>plane.urdf</urdf>
+        <xyz>0 0 0.1</xyz>
+        <rpy>0 0 0</rpy>
     </model>
 
     <model name="table">
         <xyz>0.0 0.4 0.0</xyz>
+        <rpy>0.0 0.0 0.0</rpy>
         <urdf>table/table.urdf</urdf>
     </model>
 
     <model name="target">
-        <xyz>0.1 0.1 0.75</xyz>
+        <xyz>0.0 0.4 0.65</xyz>
         <scale>0.05</scale>
-        <use_fixed_base>false</use_fixed_base>
         <urdf>sphere2red_nocol.urdf</urdf>
-
-        <plugin name="random_respawn" type="random_respawn">
-            <position_range>0.3 0.3 0.5</position_range>
-        </plugin>
     </model>
 
-    <model name="robot">
+    <model name="ur5_l">
         <urdf>ur5/ur5_robot.urdf</urdf>
-        <xyz>0.0 0.0 0.65</xyz>
-        <rpy>0.0 0.0 0</rpy>
+        <xyz>-0.55 0.4 0.65</xyz>
+        <rpy>0.0 0.0 -1.57</rpy>
 
         <plugin name="position_controller" type="position_controller">
             <rest_position>-0.07 -0.73 -1.93 -0.36 -0.03 -0.06</rest_position>
@@ -35,11 +33,18 @@
         </plugin>
 
         <plugin name="joint_state" type="joint_state_sensor"/>
+    </model>
 
-        <plugin name="gripper_camera" type="camera">
-            <rpy>0.0 0.0 3.1415</rpy>
-            <base_frame>wrist_3_link-tool0_fixed_joint</base_frame>
-            <resolution>640 480</resolution>
+    <model name="ur5_r">
+        <urdf>ur5/ur5_robot.urdf</urdf>
+        <xyz>0.55 0.4 0.65</xyz>
+        <rpy>0.0 0.0 1.57</rpy>
+
+        <plugin name="position_controller" type="position_controller">
+            <rest_position>-0.07 -0.73 -1.93 -0.36 -0.03 -0.06</rest_position>
+            <end_effector_frame>wrist_3_joint</end_effector_frame>
         </plugin>
+
+        <plugin name="joint_state" type="joint_state_sensor"/>
     </model>
 </environment>

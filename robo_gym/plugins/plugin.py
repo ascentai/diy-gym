@@ -4,14 +4,15 @@ from gym import spaces
 class Plugin:
     @staticmethod
     def factory(plugin_type, parent, config):
-        from plugins.camera import Camera
-        from plugins.position_controller import PositionController
-        from plugins.joint_controller import JointController
-        from plugins.random_respawn import RandomRespawn
-        from plugins.joint_state_sensor import JointStateSensor
-        from plugins.end_effector_state_sensor import EndEffectorStateSensor
-        from plugins.episode_timer import EpisodeTimer
-        from plugins.spawn_multiple import SpawnMultiple
+        from plugins.controllers.position_controller import PositionController
+        from plugins.controllers.joint_controller import JointController
+        from plugins.sensors.camera import Camera
+        from plugins.sensors.joint_state_sensor import JointStateSensor
+        from plugins.sensors.end_effector_state_sensor import EndEffectorStateSensor
+        from plugins.rewards.electricity_cost import ElectricityCost
+        from plugins.misc.random_respawn import RandomRespawn
+        from plugins.misc.episode_timer import EpisodeTimer
+        from plugins.misc.spawn_multiple import SpawnMultiple
 
         plugins = {
             'camera': Camera,
@@ -22,6 +23,7 @@ class Plugin:
             'end_effector_state_sensor': EndEffectorStateSensor,
             'episode_timer': EpisodeTimer,
             'spawn_multiple': SpawnMultiple,
+            'electricity_cost': ElectricityCost
         }
 
         return plugins[plugin_type](parent, config)
@@ -39,11 +41,12 @@ class Plugin:
     def reset(self):
         pass
 
-    def reward(self, observation):
+    def reward(self):
         pass
 
-    def is_terminal(self, observation):
+    def is_terminal(self):
         pass
+
 
 class Receptor:
     def __init__(self):
@@ -59,14 +62,14 @@ class Receptor:
         for plugin in self.plugins.values():
             plugin.reset()
 
-    def get_is_terminals(self, observation):
-        return {k: v for k, v in {name: plugin.is_terminal(observation) for name, plugin in self.plugins.items()}.items() if v is not None}
+    def get_is_terminals(self):
+        return {k: v for k, v in {name: plugin.is_terminal() for name, plugin in self.plugins.items()}.items() if v is not None}
 
     def get_observations(self):
         return {k: v for k, v in {name: plugin.observe() for name, plugin in self.plugins.items()}.items() if v is not None}
 
-    def get_rewards(self, observation):
-        return {k: v for k, v in {name: plugin.reward(observation) for name, plugin in self.plugins.items()}.items() if v is not None}
+    def get_rewards(self):
+        return {k: v for k, v in {name: plugin.reward() for name, plugin in self.plugins.items()}.items() if v is not None}
 
     def update_plugins(self, action):
         for name, action in action.items():

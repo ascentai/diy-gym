@@ -57,5 +57,4 @@
 
         <plugin name="joint_state" type="joint_state_sensor"/>
     </model>
-
 </environment>

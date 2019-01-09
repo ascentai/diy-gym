@@ -16,5 +16,5 @@ class EpisodeTimer(Plugin):
     def reset(self):
         self.step_timer = 0
 
-    def is_terminal(self, observation):
+    def is_terminal(self):
         return self.step_timer >= self.max_steps
