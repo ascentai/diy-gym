@@ -6,7 +6,7 @@ import numpy as np
 
 from config import Configuration
 from model import Model
-from plugins.plugin import Plugin, Receptor
+from plugins.plugin import PluginFactory, Receptor
 
 
 class RoboGym(gym.Env, Receptor):
@@ -18,7 +18,7 @@ class RoboGym(gym.Env, Receptor):
         config = Configuration.from_file(config_file)
 
         self.sum_rewards = config.get('sum_rewards', True)
-        self.sum_terminals = config.get('sum_terminals', True)
+        self.sum_terminals = config.get('sum_terminals', False)
         self.sub_steps = config.get('substeps', 200)
 
         if config.get('render', True):
@@ -39,7 +39,7 @@ class RoboGym(gym.Env, Receptor):
         p.setGravity(gravity[0], gravity[1], gravity[2])
 
         self.models = {child.attributes['name']: Model(child) for child in config.find_all('model')}
-        self.plugins = {child.attributes['name']: Plugin.factory(child.attributes['type'], self, child) for child in config.find_all('plugin')}
+        self.plugins = {child.attributes['name']: PluginFactory.build(child.attributes['type'], self, child) for child in config.find_all('plugin')}
         self.receptors = {**self.models, 'environment': self}
 
         self.observation_space, self.action_space = spaces.Dict({}), spaces.Dict({})
@@ -93,16 +93,20 @@ class RoboGym(gym.Env, Receptor):
 
 if __name__ == '__main__':
 
+    PluginFactory.add_plugin('extra_reach_target', ExtraReachTarget)
+
     env = RoboGym('/home/tom/repos/robo-gym/robo_gym/data/environments/ur_high_5.xml')
+
     a = env.action_space.sample()
 
-    a['ur5_l']['position_controller']['orientation'] = np.array([0.0, 0.0, 0.0])
     a['ur5_l']['position_controller']['position'] = np.array([0.01, 0.0, 0.0])
-    a['ur5_r']['position_controller']['orientation'] = np.array([0.0, 0.0, 0.0])
     a['ur5_r']['position_controller']['position'] = np.array([-0.01, 0.0, 0.0])
+    a['ur5_l']['position_controller']['orientation'][:] = 0
+    a['ur5_r']['position_controller']['orientation'][:] = 0
 
-    for _ in range(10000):
+    for _ in range(100000):
         obs, rew, term, info = env.step(a)
 
-        if term:
+        if term['environment']['episode_timer'] or (term['ur5_l']['slap'] and term['ur5_r']['slap']):
             env.reset()
+            print('slap!')

@@ -1,4 +1,6 @@
 from gym import spaces
+import pybullet as p
+
 from plugins.plugin import Plugin
 
 

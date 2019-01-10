@@ -20,7 +20,6 @@ class Configuration:
 
     def get(self, key, default=None):
         ret = self.node.find(key)
-
         if ret is not None:
             ret = [self.parse(elem) for elem in ret.text.split(' ')]
             return ret[0] if len(ret) == 1 else ret
@@ -28,6 +27,9 @@ class Configuration:
             return default
         else:
             raise KeyError("Couldn't find config and no default provided")
+
+    def has_key(self, key):
+        return self.node.find(key) is not None
 
     def find(self, key):
         return Configuration(self.node.find(key))

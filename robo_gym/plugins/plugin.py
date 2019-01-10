@@ -1,33 +1,53 @@
 from gym import spaces
 
 
-class Plugin:
+class PluginFactory:
+    instance = None
+
+    class __PluginFactory:
+        def __init__(self):
+            from plugins.controllers.position_controller import PositionController
+            from plugins.controllers.joint_controller import JointController
+            from plugins.sensors.camera import Camera
+            from plugins.sensors.joint_state_sensor import JointStateSensor
+            from plugins.sensors.end_effector_state_sensor import EndEffectorStateSensor
+            from plugins.rewards.reach_target import ReachTarget
+            from plugins.rewards.stuck_joint_cost import StuckJointCost
+            from plugins.rewards.electricity_cost import ElectricityCost
+            from plugins.misc.random_respawn import RandomRespawn
+            from plugins.misc.episode_timer import EpisodeTimer
+            from plugins.misc.spawn_multiple import SpawnMultiple
+
+            self.plugins = {
+                'camera': Camera,
+                'position_controller': PositionController,
+                'joint_controller': JointController,
+                'random_respawn': RandomRespawn,
+                'joint_state_sensor': JointStateSensor,
+                'end_effector_state_sensor': EndEffectorStateSensor,
+                'episode_timer': EpisodeTimer,
+                'spawn_multiple': SpawnMultiple,
+                'electricity_cost': ElectricityCost,
+                'stuck_joint_cost': StuckJointCost,
+                'reach_target': ReachTarget
+            }
+
     @staticmethod
-    def factory(plugin_type, parent, config):
-        from plugins.controllers.position_controller import PositionController
-        from plugins.controllers.joint_controller import JointController
-        from plugins.sensors.camera import Camera
-        from plugins.sensors.joint_state_sensor import JointStateSensor
-        from plugins.sensors.end_effector_state_sensor import EndEffectorStateSensor
-        from plugins.rewards.electricity_cost import ElectricityCost
-        from plugins.misc.random_respawn import RandomRespawn
-        from plugins.misc.episode_timer import EpisodeTimer
-        from plugins.misc.spawn_multiple import SpawnMultiple
+    def build(name, parent, config):
+        if not PluginFactory.instance:
+            PluginFactory.instance = PluginFactory.__PluginFactory()
 
-        plugins = {
-            'camera': Camera,
-            'position_controller': PositionController,
-            'joint_controller': JointController,
-            'random_respawn': RandomRespawn,
-            'joint_state_sensor': JointStateSensor,
-            'end_effector_state_sensor': EndEffectorStateSensor,
-            'episode_timer': EpisodeTimer,
-            'spawn_multiple': SpawnMultiple,
-            'electricity_cost': ElectricityCost
-        }
+        return PluginFactory.instance.plugins[name](parent, config)
 
-        return plugins[plugin_type](parent, config)
+    @staticmethod
+    def add_plugin(name, cls):
+        if not PluginFactory.instance:
+            PluginFactory.instance = PluginFactory.__PluginFactory()
 
+        PluginFactory.instance.plugins[name] = cls
+
+
+class Plugin:
     def __init__(self):
         self.action_space = None
         self.observation_space = None
@@ -35,17 +55,17 @@ class Plugin:
     def update(self, action):
         pass
 
-    def observe(self):
-        pass
-
     def reset(self):
         pass
 
+    def observe(self):
+        return None
+
     def reward(self):
-        pass
+        return None
 
     def is_terminal(self):
-        pass
+        return None
 
 
 class Receptor:

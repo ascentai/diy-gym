@@ -1,3 +1,4 @@
+import numpy as np
 from gym import spaces
 from plugins.plugin import Plugin
 
@@ -6,7 +7,7 @@ class EpisodeTimer(Plugin):
     def __init__(self, parent, config):
         super(EpisodeTimer, self).__init__()
 
-        self.action_space = spaces.Box(low=-1, high=1, shape=(0,))
+        self.action_space = spaces.Box(low=-1, high=1, shape=(0,), dtype=np.uint8)
         self.step_timer = 0
         self.max_steps = config.get('max_steps')
 

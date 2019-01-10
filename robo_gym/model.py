@@ -2,7 +2,7 @@ import pybullet as p
 import pybullet_data
 import os
 from gym import spaces
-from plugins.plugin import Plugin, Receptor
+from plugins.plugin import PluginFactory, Receptor
 
 
 urdf_path = [
@@ -35,4 +35,4 @@ class Model(Receptor):
         except KeyError:
             pass
 
-        self.plugins = {child.attributes['name']: Plugin.factory(child.attributes['type'], self, child) for child in config.find_all('plugin')}
+        self.plugins = {child.attributes['name']: PluginFactory.build(child.attributes['type'], self, child) for child in config.find_all('plugin')}

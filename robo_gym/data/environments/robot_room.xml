@@ -4,7 +4,7 @@
     <render>true</render>
 
     <plugin name="episode_timer" type="episode_timer">
-        <max_steps>100</max_steps>
+        <max_steps>50</max_steps>
     </plugin>
 
     <plugin name="molex_spawner" type="spawn_multiple">
