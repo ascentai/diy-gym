@@ -1,14 +1,6 @@
 import xml.etree.ElementTree as ET
 
 
-def isfloat(value):
-    try:
-        float(value)
-        return True
-    except ValueError:
-        return False
-
-
 class Configuration:
     @classmethod
     def from_file(cls, file):
@@ -44,7 +36,7 @@ class Configuration:
     def parse(self, string):
         if string.isdigit():
             return int(string)
-        elif isfloat(string):
+        elif self.is_float(string):
             return float(string)
         elif string.lower() == 'true':
             return True
@@ -52,3 +44,10 @@ class Configuration:
             return False
         else:
             return string
+
+    def is_float(self, value):
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False

@@ -10,8 +10,22 @@ from plugins.plugin import PluginFactory, Receptor
 
 
 class RoboGym(gym.Env, Receptor):
+    """RoboGym: A flexible simulation environment for robot arms to drive RL research @ Ascent
+
+    The RoboGym class accepts an XML config file and uses this to:
+    - Spawn a bunch of models in pybullet based on URDF files
+    - Wrangle actions and observations / rewards in and out of the plugins attached to each of those models
+    - Maintain and update its own set of plugins which act on the environment itself
+
+    The net result is an OpenAI gym interface that can be stepped, reset, observed etc. All the actual logic that defines what happens
+    when these functions are called are defined the plugins which in turn are defined by the config file. This keeps the environment nice
+    and flexible and the plugins nice and reuseable. As a result though, the interesting and task-relevant logic is contained in the plugins
+    so this file is pretty boring.
+
+    Args:
+        config_file (string): A file path pointing to the configuration file describing the environment
+    """
     def __init__(self, config_file):
-        """Initialize the gym"""
         gym.Env.__init__(self)
         Receptor.__init__(self)
 
@@ -53,10 +67,20 @@ class RoboGym(gym.Env, Receptor):
         self.reset()
 
     def seed(self, seed=None):
+        """Set the random seeds for the environment
+        """
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
     def reset(self):
+        """Calls reset() on each plugin attached to either the environment or one of its models.
+        Exactly what this does (or even if it does anything at all) is up to the plugins however
+        the general effect should be to restore the environment to its original state ahead of
+        running a new episode.
+
+        Returns:
+            dict: A dictionary containing a set of observations collected from each plugin
+        """
         for receptor in self.receptors.values():
             receptor.reset_plugins()
 
@@ -65,6 +89,10 @@ class RoboGym(gym.Env, Receptor):
         return self.observe()
 
     def observe(self):
+        """Calls observe() on each plugin attached to either the environment or one of its models.
+            Exactly what this does is up to the plugins however the general effect should be to restore
+            the environment to its original state ahead of running a new episode.
+        """
         return {k: v for k,v in {name: receptor.get_observations() for name, receptor in self.receptors.items()}.items() if len(v)}
 
     def reward(self):
@@ -93,20 +121,21 @@ class RoboGym(gym.Env, Receptor):
 
 if __name__ == '__main__':
 
-    PluginFactory.add_plugin('extra_reach_target', ExtraReachTarget)
-
-    env = RoboGym('/home/tom/repos/robo-gym/robo_gym/data/environments/ur_high_5.xml')
+    env = RoboGym('/home/tom/repos/robo-gym/robo_gym/data/environments/jaco_on_a_table.xml')
 
     a = env.action_space.sample()
 
-    a['ur5_l']['position_controller']['position'] = np.array([0.01, 0.0, 0.0])
-    a['ur5_r']['position_controller']['position'] = np.array([-0.01, 0.0, 0.0])
-    a['ur5_l']['position_controller']['orientation'][:] = 0
-    a['ur5_r']['position_controller']['orientation'][:] = 0
+    a['robot']['position_controller']['position'] = np.array([0.005, 0.005, -0.005])
+    a['robot']['position_controller']['orientation'] = np.array([-0.02, 0.02, -0.02])
+
+    # a['ur5_l']['position_controller']['position'] = np.array([0.005, 0.0, 0.0])
+    # a['ur5_r']['position_controller']['position'] = np.array([-0.005, 0.0, 0.0])
+    # a['ur5_l']['position_controller']['orientation'][:] = 0
+    # a['ur5_r']['position_controller']['orientation'][:] = 0
 
     for _ in range(100000):
         obs, rew, term, info = env.step(a)
 
-        if term['environment']['episode_timer'] or (term['ur5_l']['slap'] and term['ur5_r']['slap']):
-            env.reset()
-            print('slap!')
+        # if term['ur5_l']['slap'] and term['ur5_r']['slap']:
+        #     print('slap!')
+        #     env.reset()

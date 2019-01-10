@@ -2,6 +2,9 @@
 <environment>
     <substeps>200</substeps>
     <render>true</render>
+    <camera_yaw>131</camera_yaw>
+    <camera_pitch>-25</camera_pitch>
+    <camera_distance>1.2</camera_distance>
 
     <plugin name="episode_timer" type="episode_timer">
         <max_steps>50</max_steps>
@@ -44,7 +47,7 @@
         <plugin name="gripper_camera" type="camera">
             <rpy>0.0 0.0 3.1415</rpy>
             <base_frame>gripper_joint</base_frame>
-            <resolution>100 100</resolution>
+            <resolution>200 200</resolution>
         </plugin>
     </model>
 
