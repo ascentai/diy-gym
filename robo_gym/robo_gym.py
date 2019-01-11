@@ -4,9 +4,9 @@ from gym.utils import seeding
 import pybullet as p
 import numpy as np
 
-from config import Configuration
-from model import Model
-from plugins.plugin import PluginFactory, Receptor
+from .config import Configuration
+from .model import Model
+from .plugins.plugin import PluginFactory, Receptor
 
 
 class RoboGym(gym.Env, Receptor):
@@ -31,7 +31,7 @@ class RoboGym(gym.Env, Receptor):
 
         config = Configuration.from_file(config_file)
 
-        self.sum_rewards = config.get('sum_rewards', True)
+        self.sum_rewards = config.get('sum_rewards', False)
         self.sum_terminals = config.get('sum_terminals', False)
         self.sub_steps = config.get('substeps', 200)
 

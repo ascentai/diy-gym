@@ -2,12 +2,13 @@ import pybullet as p
 import pybullet_data
 import os
 from gym import spaces
-from plugins.plugin import PluginFactory, Receptor
+
+from .plugins.plugin import PluginFactory, Receptor
 
 
 urdf_path = [
     '',
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/models/'),
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/'),
     pybullet_data.getDataPath()
 ]
 

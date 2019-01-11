@@ -1,5 +1,5 @@
 from gym import spaces
-from plugins.plugin import Plugin
+from ..plugin import Plugin
 import pybullet as p
 
 class ElectricityCost(Plugin):

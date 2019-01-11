@@ -19,6 +19,14 @@ You can even define environments with multiple robot arms, reward signals and ep
 
 ## Installation:
 
+```
+conda create --name robo-gym-install python=3.5
+source activate robo-gym-install
+cd $PATH_TO_ROBOGYM
+pip install -r requirements.txt
+pip install -e .
+
+```
 
 ## How it Works:
 

@@ -1,7 +1,7 @@
 import pybullet as p
 import numpy as np
 from gym import spaces
-from plugins.plugin import Plugin
+from ..plugin import Plugin
 
 
 class Camera(Plugin):

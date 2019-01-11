@@ -21,7 +21,7 @@
         <xyz>-0.55 0.4 0.65</xyz>
         <rpy>0.0 0.0 -1.57</rpy>
 
-        <plugin name="position_controller" type="position_controller">
+        <plugin name="controller" type="position_controller">
             <rest_position>-0.07 -0.73 -1.93 -0.36 -0.03 -0.06</rest_position>
             <end_effector_frame>wrist_3_joint</end_effector_frame>
         </plugin>
@@ -39,7 +39,7 @@
         <xyz>0.55 0.4 0.65</xyz>
         <rpy>0.0 0.0 1.57</rpy>
 
-        <plugin name="position_controller" type="position_controller">
+        <plugin name="controller" type="position_controller">
             <rest_position>-0.07 -0.73 -1.93 -0.36 -0.03 -0.06</rest_position>
             <end_effector_frame>wrist_3_joint</end_effector_frame>
         </plugin>

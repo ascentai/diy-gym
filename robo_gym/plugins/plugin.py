@@ -14,17 +14,17 @@ class PluginFactory:
         https://python-3-patterns-idioms-test.readthedocs.io/en/latest/Singleton.html
         """
         def __init__(self):
-            from plugins.controllers.position_controller import PositionController
-            from plugins.controllers.joint_controller import JointController
-            from plugins.sensors.camera import Camera
-            from plugins.sensors.joint_state_sensor import JointStateSensor
-            from plugins.sensors.end_effector_state_sensor import EndEffectorStateSensor
-            from plugins.rewards.reach_target import ReachTarget
-            from plugins.rewards.stuck_joint_cost import StuckJointCost
-            from plugins.rewards.electricity_cost import ElectricityCost
-            from plugins.misc.random_respawn import RandomRespawn
-            from plugins.misc.episode_timer import EpisodeTimer
-            from plugins.misc.spawn_multiple import SpawnMultiple
+            from .controllers.position_controller import PositionController
+            from .controllers.joint_controller import JointController
+            from .sensors.camera import Camera
+            from .sensors.joint_state_sensor import JointStateSensor
+            from .sensors.end_effector_state_sensor import EndEffectorStateSensor
+            from .rewards.reach_target import ReachTarget
+            from .rewards.stuck_joint_cost import StuckJointCost
+            from .rewards.electricity_cost import ElectricityCost
+            from .misc.random_respawn import RandomRespawn
+            from .misc.episode_timer import EpisodeTimer
+            from .misc.spawn_multiple import SpawnMultiple
 
             self.plugins = {
                 'camera': Camera,

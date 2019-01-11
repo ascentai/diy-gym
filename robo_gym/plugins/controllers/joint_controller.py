@@ -1,7 +1,7 @@
 import numpy as np
 import pybullet as p
 from gym import spaces
-from plugins.plugin import Plugin
+from ..plugin import Plugin
 
 
 class JointController(Plugin):

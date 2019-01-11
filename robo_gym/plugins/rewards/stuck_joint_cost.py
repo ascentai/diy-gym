@@ -1,7 +1,7 @@
 from gym import spaces
 import pybullet as p
 
-from plugins.plugin import Plugin
+from ..plugin import Plugin
 
 
 class StuckJointCost(Plugin):

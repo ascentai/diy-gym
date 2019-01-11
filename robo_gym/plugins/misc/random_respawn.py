@@ -1,6 +1,6 @@
 import numpy as np
 import pybullet as p
-from plugins.plugin import Plugin
+from ..plugin import Plugin
 
 
 class RandomRespawn(Plugin):

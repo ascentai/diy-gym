@@ -1,5 +1,5 @@
-from plugins.plugin import Plugin
-from model import Model
+from ..plugin import Plugin
+from robo_gym.model import Model
 
 
 class SpawnMultiple(Plugin):

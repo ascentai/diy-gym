@@ -6,8 +6,8 @@
     <camera_pitch>-25</camera_pitch>
     <camera_distance>1.2</camera_distance>
 
-    <plugin name="episode_timer" type="episode_timer">
-        <max_steps>50</max_steps>
+    <plugin name="timer" type="episode_timer">
+        <max_steps>25</max_steps>
     </plugin>
 
     <plugin name="molex_spawner" type="spawn_multiple">
@@ -35,7 +35,7 @@
         <urdf>rs007n/rs007n.urdf</urdf>
         <xyz>0.0 -0.22 0.5</xyz>
 
-        <plugin name="position_controller" type="position_controller">
+        <plugin name="controller" type="position_controller">
             <rest_position>0.0 -0.32 -1.98 -0.08 0.0 0.0</rest_position>
             <end_effector_frame>gripper_joint</end_effector_frame>
         </plugin>
