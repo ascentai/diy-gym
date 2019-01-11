@@ -19,15 +19,22 @@ You can even define environments with multiple robot arms, reward signals and ep
 
 ## Installation:
 
+It's best to work out of a virtualenv, if you haven't already, download and install [conda](https://www.anaconda.com/download/). Once you're done, make yourself an environment using python3.5 and activate it like so:
 ```
-conda create --name robo-gym-install python=3.5
-source activate robo-gym-install
+conda create --name robo-gym python=3.5
+source activate robo-gym
+```
+Now navigate to wherever you cloned RoboGym and install its requirements then RoboGym itself:
+```
 cd $PATH_TO_ROBOGYM
 pip install -r requirements.txt
 pip install -e .
-
 ```
-
+You can test your installation by running any of the environments in the examples folder:
+```
+cd $PATH_TO_ROBOGYM/examples/ur_high_5
+python ur_high_5.py
+```
 ## How it Works:
 
 Assuming you've got set up the environment the way you like it, then you can treat RoboGym like any other RL gym. Create an environment like this:
@@ -135,7 +142,7 @@ To see how this works, let's add a couple of plugins to the jaco environment:
 </environment>
 ```
 These additions will do the following:
-* `purple_thing_camera` will take RGB and a depth image from the base_joint frame of the purple thing and add those observations to the dict returned when RoboGym is `step`'ed or `reset`
+* `purple_thing_camera` will take RGB and depth images from the base_joint frame of the purple thing and add those observations to the dict returned when RoboGym is `step`'ed or `reset`
 * `controller` will move the end effector of the jaco arm in cartesian mode in response actions passed to `step`
 * `be_lazy` will calculate a penalty for the amount of joint torque currently being applied by the jaco and this penalty will be included in the reward value returned by `step`
 
