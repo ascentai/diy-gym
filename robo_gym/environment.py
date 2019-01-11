@@ -97,11 +97,11 @@ class RoboGym(gym.Env, Receptor):
 
     def reward(self):
         ret = {k: v for k,v in {name: receptor.get_rewards() for name, receptor in self.receptors.items()}.items() if len(v)}
-        return self.sum_dict(ret) if self.sum_rewards else ret
+        return self.walk_dict(ret) if self.sum_rewards else ret
 
     def is_terminal(self):
         ret = {k: v for k,v in {name: receptor.get_is_terminals() for name, receptor in self.receptors.items()}.items() if len(v)}
-        return self.sum_dict(ret) > 0 if self.sum_terminals else ret
+        return self.walk_dict(ret) > 0 if self.sum_terminals else ret
 
     def step(self, action):
         for receptor_name, receptor_action in action.items():
@@ -115,8 +115,8 @@ class RoboGym(gym.Env, Receptor):
     def close(self):
         p.disconnect()
 
-    def sum_dict(self, d):
-        return sum(self.sum_dict(e) if isinstance(e, dict) else e for e in d.values())
+    def walk_dict(self, d, func=sum):
+        return func(self.walk_dict(e) if isinstance(e, dict) else e for e in d.values())
 
 
 if __name__ == '__main__':
@@ -125,8 +125,8 @@ if __name__ == '__main__':
 
     a = env.action_space.sample()
 
-    a['robot']['position_controller']['position'] = np.array([0.005, 0.005, -0.005])
-    a['robot']['position_controller']['orientation'] = np.array([-0.02, 0.02, -0.02])
+    a['robot']['controller']['position'] = np.array([0.005, 0.005, -0.005])
+    a['robot']['controller']['orientation'] = np.array([-0.02, 0.02, -0.02])
 
     # a['ur5_l']['position_controller']['position'] = np.array([0.005, 0.0, 0.0])
     # a['ur5_r']['position_controller']['position'] = np.array([-0.005, 0.0, 0.0])
