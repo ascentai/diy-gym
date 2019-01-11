@@ -12,6 +12,8 @@
     <model name="purple_thing">
         <xyz>0.0 0.5 0.7</xyz>
         <urdf>random_urdfs/865/865.urdf</urdf>
+
+        <plugin name="external_force" type="external_force"/>
     </model>
 
     <model name="robot">
