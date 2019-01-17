@@ -3,12 +3,12 @@ from robo_gym import RoboGym
 
 if __name__ == '__main__':
 
-    env = RoboGym('robot_room.xml')
+    env = RoboGym('/home/tom/repos/robo-gym/examples/robot_room/robot_room.xml')
 
     action = env.action_space.sample()
 
-    action['robot']['controller']['position'] = np.array([0.01, 0.0, -0.01])
-    action['robot']['controller']['orientation'] = np.array([-0.05, 0.0, 0.0])
+    action['robot']['controller']['position'] = np.array([0.0, 0.0, 0.0])
+    action['robot']['controller']['orientation'] = np.array([-0.02, -0.05, 0.0])
 
     cumulative_reward = 0
 

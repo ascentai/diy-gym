@@ -30,7 +30,7 @@ class ExternalForce(Plugin):
 if __name__ == '__main__':
     PluginFactory.add_plugin('external_force', ExternalForce)
 
-    env = RoboGym('jaco_on_a_table.xml')
+    env = RoboGym('/home/tom/repos/robo-gym/examples/jaco_on_a_table/jaco_on_a_table.xml')
 
     action = env.action_space.sample()
 

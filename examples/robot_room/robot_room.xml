@@ -11,10 +11,10 @@
     </plugin>
 
     <plugin name="molex_spawner" type="spawn_multiple">
-        <num_models>10</num_models>
+        <num_models>20</num_models>
         <model name="molex">
-            <xyz>0.0 0.4 0.9</xyz>
-            <urdf>molex/molex.urdf</urdf>
+            <xyz>0.0 0.2 0.9</xyz>
+            <urdf>duck_vhacd.urdf</urdf>
             <plugin name="random_respawn" type="random_respawn">
                 <position_range>0.3 0.3 0.5</position_range>
                 <rotation_range>3.1415 3.1415 3.1415</rotation_range>
@@ -26,18 +26,13 @@
         <urdf>plane.urdf</urdf>
     </model>
 
-    <model name="table">
-        <xyz>0.0 0.4 0.0</xyz>
-        <urdf>table/table.urdf</urdf>
-    </model>
-
     <model name="robot">
-        <urdf>rs007n/rs007n.urdf</urdf>
-        <xyz>0.0 -0.22 0.5</xyz>
+        <urdf>kuka_iiwa/model.urdf</urdf>
+        <xyz>0.0 -0.4 0.0</xyz>
 
         <plugin name="controller" type="position_controller">
-            <rest_position>0.0 -0.32 -1.98 -0.08 0.0 0.0</rest_position>
-            <end_effector_frame>gripper_joint</end_effector_frame>
+            <rest_position>-0.94 0.0 -0.59 1.86 0.88 0.0 0.0</rest_position>
+            <end_effector_frame>lbr_iiwa_joint_7</end_effector_frame>
         </plugin>
 
         <plugin name="joint_state" type="joint_state_sensor"/>
@@ -45,8 +40,9 @@
         <plugin name="be_lazy" type="electricity_cost"/>
 
         <plugin name="gripper_camera" type="camera">
+            <xyz>0.0 0.0 0.1</xyz>
             <rpy>0.0 0.0 3.1415</rpy>
-            <base_frame>gripper_joint</base_frame>
+            <base_frame>lbr_iiwa_joint_7</base_frame>
             <resolution>200 200</resolution>
         </plugin>
     </model>
