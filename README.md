@@ -8,7 +8,9 @@ RoboGym works by wrapping pybullet up in a slightly higher level framework loose
 * A config file which declares and parameterises all the objects to spawn in the simulated environment
 * A set of add-ons which can be attached to an object to control, observe, derive reward from or just generally interact with that object during a simulation.
 
-RoboGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find those are lacking, you can also pretty easily add your own (more on that below). As for the simulated objects themselves, basically whatever you can dig up a URDF for, you can incorporate straight into your environment. Point being, without too much effort you can define a really wide variety of RL environments with RoboGym; all complete with OpenAI gym interfaces and fully defined action and observation spaces.
+RoboGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find those are lacking, you can also pretty easily add your own (more on that below). As for the simulated objects themselves, basically whatever you can dig up a URDF for, you can incorporate straight into your environment. 
+
+Point being, without too much effort you can define a really wide variety of RL environments with RoboGym; all complete with OpenAI gym interfaces and fully defined action and observation spaces. That way, if you want a Jaco arm to learn to pick up some ducks, or two UR5 to high five, you can do so just by writing a short config file.
 
 ![getting_jaco_ed_up](https://user-images.githubusercontent.com/38680667/51370511-b9287400-1b3a-11e9-957b-0e0206e79698.gif) ![ur_high_5](https://user-images.githubusercontent.com/38680667/50953809-d97f7f80-14f7-11e9-8195-727cd21e8e5b.gif)
 
