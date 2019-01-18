@@ -64,7 +64,7 @@ class AddonFactory:
         return AddonFactory.get().addons[name](parent, config)
 
     @staticmethod
-    def add_addon(name, cls):
+    def register_addon(name, cls):
         AddonFactory.get().addons[name] = cls
 
 
