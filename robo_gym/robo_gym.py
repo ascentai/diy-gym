@@ -6,7 +6,7 @@ import numpy as np
 
 from .config import Configuration
 from .model import Model
-from .plugins.plugin import PluginFactory, Receptor
+from .addons.addon import AddonFactory, Receptor
 
 
 class RoboGym(gym.Env, Receptor):
@@ -14,12 +14,12 @@ class RoboGym(gym.Env, Receptor):
 
     The RoboGym class accepts an XML config file and uses this to:
     - Spawn a bunch of models in pybullet based on URDF files
-    - Wrangle actions and observations / rewards in and out of the plugins attached to each of those models
-    - Maintain and update its own set of plugins which act on the environment itself
+    - Wrangle actions and observations / rewards in and out of the addons attached to each of those models
+    - Maintain and update its own set of addons which act on the environment itself
 
     The net result is an OpenAI gym interface that can be stepped, reset, observed etc. All the actual logic that defines what happens
-    when these functions are called are defined the plugins which in turn are defined by the config file. This keeps the environment nice
-    and flexible and the plugins nice and reuseable. As a result though, the interesting and task-relevant logic is contained in the plugins
+    when these functions are called are defined the addons which in turn are defined by the config file. This keeps the environment nice
+    and flexible and the addons nice and reuseable. As a result though, the interesting and task-relevant logic is contained in the addons
     so this file is pretty boring.
 
     Args:
@@ -53,7 +53,7 @@ class RoboGym(gym.Env, Receptor):
         p.setGravity(gravity[0], gravity[1], gravity[2])
 
         self.models = {child.attributes['name']: Model(child) for child in config.find_all('model')}
-        self.plugins = {child.attributes['name']: PluginFactory.build(child.attributes['type'], self, child) for child in config.find_all('plugin')}
+        self.addons = {child.attributes['name']: AddonFactory.build(child.attributes['type'], self, child) for child in config.find_all('addon')}
         self.receptors = {**self.models, 'environment': self}
 
         self.observation_space, self.action_space = spaces.Dict({}), spaces.Dict({})
@@ -73,24 +73,24 @@ class RoboGym(gym.Env, Receptor):
         return [seed]
 
     def reset(self):
-        """Calls reset() on each plugin attached to either the environment or one of its models.
-        Exactly what this does (or even if it does anything at all) is up to the plugins however
+        """Calls reset() on each addon attached to either the environment or one of its models.
+        Exactly what this does (or even if it does anything at all) is up to the addons however
         the general effect should be to restore the environment to its original state ahead of
         running a new episode.
 
         Returns:
-            dict: A dictionary containing a set of observations collected from each plugin
+            dict: A dictionary containing a set of observations collected from each addon
         """
         for receptor in self.receptors.values():
-            receptor.reset_plugins()
+            receptor.reset_addons()
 
         p.stepSimulation()
 
         return self.observe()
 
     def observe(self):
-        """Calls observe() on each plugin attached to either the environment or one of its models.
-            Exactly what this does is up to the plugins however the general effect should be to restore
+        """Calls observe() on each addon attached to either the environment or one of its models.
+            Exactly what this does is up to the addons however the general effect should be to restore
             the environment to its original state ahead of running a new episode.
         """
         return {k: v for k,v in {name: receptor.get_observations() for name, receptor in self.receptors.items()}.items() if len(v)}
@@ -105,7 +105,7 @@ class RoboGym(gym.Env, Receptor):
 
     def step(self, action):
         for receptor_name, receptor_action in action.items():
-            self.receptors[receptor_name].update_plugins(receptor_action)
+            self.receptors[receptor_name].update_addons(receptor_action)
 
         for _ in range(self.sub_steps):
             p.stepSimulation()

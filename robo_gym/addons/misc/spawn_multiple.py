@@ -1,8 +1,8 @@
-from ..plugin import Plugin
+from ..addon import Addon
 from robo_gym.model import Model
 
 
-class SpawnMultiple(Plugin):
+class SpawnMultiple(Addon):
     def __init__(self, parent, config):
         super(SpawnMultiple, self).__init__()
 

@@ -1,11 +1,8 @@
 <?xml version="1.0"?>
 <environment>
-    <substeps>200</substeps>
-    <render>true</render>
-
-    <plugin name="episode_timer" type="episode_timer">
+    <addon name="episode_timer" type="episode_timer">
         <max_steps>50</max_steps>
-    </plugin>
+    </addon>
 
     <model name="plane">
         <urdf>plane.urdf</urdf>
@@ -21,17 +18,17 @@
         <xyz>-0.55 0.4 0.65</xyz>
         <rpy>0.0 0.0 -1.57</rpy>
 
-        <plugin name="controller" type="position_controller">
+        <addon name="controller" type="position_controller">
             <rest_position>-0.07 -0.73 -1.93 -0.36 -0.03 -0.06</rest_position>
             <end_effector_frame>wrist_3_joint</end_effector_frame>
-        </plugin>
+        </addon>
 
-        <plugin name="slap" type="reach_target">
+        <addon name="slap" type="reach_target">
             <target_position>0.0 0.4 1.3</target_position>
             <frame>wrist_3_joint</frame>
-        </plugin>
+        </addon>
 
-        <plugin name="joint_state" type="joint_state_sensor"/>
+        <addon name="joint_state" type="joint_state_sensor"/>
     </model>
 
     <model name="ur5_r">
@@ -39,16 +36,16 @@
         <xyz>0.55 0.4 0.65</xyz>
         <rpy>0.0 0.0 1.57</rpy>
 
-        <plugin name="controller" type="position_controller">
+        <addon name="controller" type="position_controller">
             <rest_position>-0.07 -0.73 -1.93 -0.36 -0.03 -0.06</rest_position>
             <end_effector_frame>wrist_3_joint</end_effector_frame>
-        </plugin>
+        </addon>
 
-        <plugin name="slap" type="reach_target">
+        <addon name="slap" type="reach_target">
             <target_position>0.0 0.4 1.3</target_position>
             <frame>wrist_3_joint</frame>
-        </plugin>
+        </addon>
 
-        <plugin name="joint_state" type="joint_state_sensor"/>
+        <addon name="joint_state" type="joint_state_sensor"/>
     </model>
 </environment>

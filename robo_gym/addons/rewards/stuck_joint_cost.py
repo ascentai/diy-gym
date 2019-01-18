@@ -1,10 +1,10 @@
 from gym import spaces
 import pybullet as p
 
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class StuckJointCost(Plugin):
+class StuckJointCost(Addon):
     def __init__(self, parent, config):
         super(StuckJointCost, self).__init__()
 

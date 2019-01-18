@@ -1,10 +1,11 @@
 import pybullet as p
 import numpy as np
 from gym import spaces
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class JointStateSensor(Plugin):
+class JointStateSensor(Addon):
+
     def __init__(self, parent, config):
         super(JointStateSensor, self).__init__()
 

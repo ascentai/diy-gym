@@ -1,21 +1,18 @@
 RoboGym
 ========
 
-RoboGym is a flexible simulation environment built on top of pybullet to drive research on robot arms here at Ascent. It's intended to be a reinforcement learning environment but it's probably flexible enough to be useful for research outside of RL too though, so don't be deterred if RL isn't your thing.
+RoboGym is a framework for creating reinforcement learning environments using pybullet. It's designed to simplify the process of parameterising an environment, defining its observations, actions and reward signals and bottling all of that functionality up into an OpenAI style gym interface. It's especially useful replicating physical robot setups in simulation and randomising the parameters of that simulation for sim-to-real transfer.
 
-RoboGym is designed to support all the weird and wonderful research ideas you (yes, you!) might have and to save a lot of the legwork involved getting a robot arm up and running in pybullet. With very little effort, RoboGym can be set up to simulate a huge variety of environments, all complete with OpenAI gym interfaces and fully defined action and observation spaces:
+RoboGym works by wrapping pybullet up in a slightly higher level framework loosely inspired by Gazebo's SDFs and Addons. In particular, it defines:
 
-We can recreate the 8f robot room - including some molexes, the rs007n and its gripper mounted RGBD camera:
+* A config file which declares and parameterises all the objects to spawn in the simulated environment
+* A set of add-ons which can be attached to an object to control, observe, derive reward from or just generally interact with that object during a simulation.
 
-![robot_room](https://user-images.githubusercontent.com/38680667/50953808-d8e6e900-14f7-11e9-9ee0-3cadf0f7fcb6.gif)
+RoboGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find those are lacking, you can also pretty easily add your own (more on that below). As for the simulated objects themselves, basically whatever you can dig up a URDF for, you can incorporate straight into your environment. 
 
-Simulate our trusty Jaco arm:
+Point being, without too much effort you can define a really wide variety of RL environments with RoboGym; all complete with OpenAI gym interfaces and fully defined action and observation spaces. That way, if you want a Jaco arm to learn to pick up some ducks, or two UR5 to high five, you can do so just by writing a short config file.
 
-![getting_jaco_ed_up](https://user-images.githubusercontent.com/38680667/50953806-d8e6e900-14f7-11e9-9f93-ca190f9c6b65.gif)
-
-It's even possible to define environments with multiple robot arms, reward signals and episode termination conditions:
-
-![ur_high_5](https://user-images.githubusercontent.com/38680667/50953809-d97f7f80-14f7-11e9-8195-727cd21e8e5b.gif)
+![getting_jaco_ed_up](https://user-images.githubusercontent.com/38680667/51370511-b9287400-1b3a-11e9-957b-0e0206e79698.gif) ![ur_high_5](https://user-images.githubusercontent.com/38680667/50953809-d97f7f80-14f7-11e9-8195-727cd21e8e5b.gif)
 
 ## Installation:
 
@@ -37,7 +34,7 @@ python ur_high_5.py
 ```
 ## How it Works:
 
-Assuming you've got set up the environment the way you like, you can treat RoboGym like any other RL gym. Create an environment like this:
+RoboGym works just like any other reinforcement learning gym. Create an environment like this:
 ```
 env = RoboGym(path_to_config_file)
 ```
@@ -68,7 +65,7 @@ The file itself contains one root node called `environment` which in turns conta
 
 RoboGym will search for URDFs in the data folder of this pacakge, the pybullet data folder or you can also just specify the absolute path.
 
-As an example of what this looks like the jaco arm and it's environment above are described by the following config file:
+As an example of what this looks like we can define an environment in which a jaco arm sits on a table in front of a tiny R2D2 robot like so:
 
 ```
 <?xml version="1.0"?>
@@ -82,9 +79,10 @@ As an example of what this looks like the jaco arm and it's environment above ar
         <urdf>table/table.urdf</urdf>
     </model>
 
-    <model name="purple_thing">
+    <model name="r2d2">
         <xyz>0.0 0.5 0.7</xyz>
-        <urdf>random_urdfs/865/865.urdf</urdf>
+        <scale>0.1</scale>
+        <urdf>r2d2.urdf</urdf>
     </model>
 
     <model name="robot">
@@ -94,15 +92,15 @@ As an example of what this looks like the jaco arm and it's environment above ar
 </environment>
 ```
 
-### Plugins:
+### Addons:
 
 As it stands, the environment described above is pretty pointless since there's no way to control any of the models or take any observations from them. In fact if you print the action/observation spaces for the environment at this point they'll just be empty dictionaries.
 
-To actually interact with an environment we use entities called plugins. A plugin is a python object that can be attached to a model or the environment itself and it allows custom code to interact with the simulation whenever the user calls either `step()` or `reset()` on the RoboGym environment.
+To actually interact with an environment we use entities called add-ons. An add-on is a chunk of code that can be attached to a model or the environment itself which interacts with the simulation whenever the user calls either `step` or `reset` on the RoboGym environment.
 
-There's a slew of built-in plugins that can be used to control robot arm end effectors, attach cameras to models and so forth so there's already a pretty decent set of environments that can be defined out-of-the-box. You can also define your own plugins relatively easily, see below for more.
+There's a slew of built-in add-ons that can be used to control robot arm end effectors, attach cameras to models and so forth so there's already a pretty decent set of environments that can be defined out-of-the-box. You can also define your own add-ons relatively easily, see below for more.
 
-To see how teh built-in plugins work, let's add a couple of few to the jaco environment:
+To see how the built-in add-ons work, let's add a couple of few to the jaco environment:
 
 ```
 <?xml version="1.0"?>
@@ -116,14 +114,15 @@ To see how teh built-in plugins work, let's add a couple of few to the jaco envi
         <urdf>table/table.urdf</urdf>
     </model>
 
-    <model name="purple_thing">
+    <model name="r2d2">
         <xyz>0.0 0.5 0.7</xyz>
-        <urdf>random_urdfs/865/865.urdf</urdf>
+        <scale>0.1</scale>
+        <urdf>r2d2.urdf</urdf>
 
-        <plugin name="purple_thing_camera" type="camera">
-            <base_frame>baseLink</base_frame>
+        <addon name="r2d2" type="camera">
+            <base_frame>left_tip_joint</base_frame>
             <resolution>200 200</resolution>
-        </plugin>
+        </addon>
 
     </model>
 
@@ -131,38 +130,38 @@ To see how teh built-in plugins work, let's add a couple of few to the jaco envi
         <urdf>jaco/j2s7s300_standalone.urdf</urdf>
         <xyz>0.0 0.0 0.65</xyz>
 
-        <plugin name="controller" type="position_controller">
+        <addon name="controller" type="position_controller">
             <rest_position>0.0 2.9 0.0 1.3 4.2 1.4 0.0 1.0 1.0 1.0</rest_position>
             <end_effector_frame>j2s7s300_joint_end_effector</end_effector_frame>
-        </plugin>
+        </addon>
 
-        <plugin name="be_lazy" type="electricity_cost"/>
+        <addon name="be_lazy" type="electricity_cost"/>
 
     </model>
 </environment>
 ```
 These additions will do the following:
-* `purple_thing_camera` will take RGB and depth images from the base_joint frame of the purple thing and add those observations to the dict returned when RoboGym is `step`'ed or `reset`
+* `r2d2_camera` will take RGB and depth images from the left_tip_joint frame of R2D2 and add those observations to the dict returned when RoboGym is `step`ped or `reset`
 * `controller` will move the end effector of the jaco arm in cartesian mode in response actions passed to `step`
 * `be_lazy` will calculate a penalty for the amount of joint torque currently being applied by the jaco and this penalty will be included in the reward value returned by `step`
 
-### Writing Your Own Plugins:
+### Writing Your Own Addons:
 
-If you need to customise your environment beyond what's possible with the built-in plugins it's pretty easy to add your own. To do so, just subclass `Plugin` in plugins/plugin.py and follow the instructions in the docstrings to fill out your desired callbacks.
+If you need to customise your environment beyond what's possible with the built-in addons it's pretty easy to add your own. To do so, just subclass `Addon` in addons/addon.py and follow the instructions in the docstrings to fill out your desired callbacks.
 
-Once you're satisfied with your plugin you can register it with RoboGym using the `PluginFactory` class like so:
+Once you're satisfied with your addon you can register it with RoboGym using the `AddonFactory` class like so:
 ```
-from robo_gym.plugins.plugin import Plugin, PluginFactory
+from robo_gym.addons.addon import Addon, AddonFactory
 
-class MyPlugin(Plugin):
+class MyAddon(Addon):
     ...
 
-PluginFactory.add_plugin('my_plugin', MyPlugin)
+AddonFactory.register_addon('my_addon', MyAddon)
 ```
-This will add your plugin to a dictionary maintained by the factory so choose a name that doesn't clash with any of built-in plugins or any others that you've defined.
+This will add your addon to a dictionary maintained by the factory so choose a name that doesn't clash with any of built-in addons or any others that you've defined.
 
-Once the plugin is added you can refer to it in a config file just as you would any other plugin and use that file to create a RoboGym:
+Once the addon is added you can refer to it in a config file just as you would any other addon and use that file to create a RoboGym:
 ```
 env = RoboGym(path_to_config_file)
 ```
-For an actual example of how to add a plugin to RoboGym, check out the [jaco_on_a_table](https://github.com/ascentai/robo-gym/tree/master/examples/jaco_on_a_table) example.
+For an actual example of how to add a addon to RoboGym, check out the [jaco_on_a_table](https://github.com/ascentai/robo-gym/tree/master/examples/jaco_on_a_table) example.

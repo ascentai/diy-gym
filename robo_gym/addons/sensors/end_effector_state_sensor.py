@@ -1,10 +1,11 @@
 import pybullet as p
 import numpy as np
 from gym import spaces
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class EndEffectorStateSensor(Plugin):
+class EndEffectorStateSensor(Addon):
+
     def __init__(self, parent, config):
         super(EndEffectorStateSensor, self).__init__()
 

@@ -1,7 +1,7 @@
 import numpy as np
 import pybullet as p
 from gym import spaces
-from ..plugin import Plugin
+from ..addon import Addon
 
 
 def quaternion_multiply(q1, q0):
@@ -13,8 +13,7 @@ def quaternion_multiply(q1, q0):
         -q1[0]*q0[0] - q1[1]*q0[1] - q1[2]*q0[2] + q1[3]*q0[3]), dtype=np.float64)
 
 
-class PositionController(Plugin):
-    """Represents the Jaco robot"""
+class PositionController(Addon):
 
     def __init__(self, parent, config):
         super(PositionController, self).__init__()
@@ -37,7 +36,6 @@ class PositionController(Plugin):
         self.reset()
 
     def reset(self):
-        """Instantiate a Jaco in a default position, orientation and pose"""
         for joint_id, angle in zip(self.joint_ids, self.rest_position):
             p.resetJointState(self.uid, joint_id, angle)
 

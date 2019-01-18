@@ -1,8 +1,8 @@
 from gym import spaces
-from ..plugin import Plugin
+from ..addon import Addon
 import pybullet as p
 
-class ElectricityCost(Plugin):
+class ElectricityCost(Addon):
     def __init__(self, parent, config):
         super(ElectricityCost, self).__init__()
 

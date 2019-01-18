@@ -2,10 +2,10 @@ from gym import spaces
 import numpy as np
 import pybullet as p
 
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class ReachTarget(Plugin):
+class ReachTarget(Addon):
     def __init__(self, parent, config):
         super(ReachTarget, self).__init__()
 

@@ -1,11 +1,9 @@
 import numpy as np
 import pybullet as p
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class RandomRespawn(Plugin):
-    """Represents the Jaco robot"""
-
+class RandomRespawn(Addon):
     def __init__(self, parent, config):
         super(RandomRespawn, self).__init__()
 

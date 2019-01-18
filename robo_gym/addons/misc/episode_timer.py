@@ -1,9 +1,9 @@
 import numpy as np
 from gym import spaces
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class EpisodeTimer(Plugin):
+class EpisodeTimer(Addon):
     def __init__(self, parent, config):
         super(EpisodeTimer, self).__init__()
 

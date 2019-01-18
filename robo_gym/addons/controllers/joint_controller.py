@@ -1,11 +1,10 @@
 import numpy as np
 import pybullet as p
 from gym import spaces
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class JointController(Plugin):
-    """Represents the Jaco robot"""
+class JointController(Addon):
 
     def __init__(self, parent, config):
         super(JointController, self).__init__()
@@ -23,7 +22,6 @@ class JointController(Plugin):
         })
 
     def reset(self):
-        """Instantiate a Jaco in a default position, orientation and pose"""
         for joint_id, angle in zip(self.joint_ids, self.rest_position):
             p.resetJointState(self.uid, joint_id, angle)
 

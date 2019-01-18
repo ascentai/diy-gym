@@ -1,10 +1,10 @@
 import pybullet as p
 import numpy as np
 from gym import spaces
-from ..plugin import Plugin
+from ..addon import Addon
 
 
-class Camera(Plugin):
+class Camera(Addon):
     def __init__(self, parent, config):
         super(Camera, self).__init__()
 
