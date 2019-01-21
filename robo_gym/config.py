@@ -18,7 +18,7 @@ class Configuration:
         elif default is not None:
             return default
         else:
-            raise KeyError("Couldn't find config and no default provided")
+            raise KeyError("Couldn't find config and no default provided for config with key: " + key)
 
     def has_key(self, key):
         return self.node.find(key) is not None

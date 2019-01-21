@@ -31,8 +31,8 @@ class RoboGym(gym.Env, Receptor):
 
         config = Configuration.from_file(config_file)
 
-        self.sum_rewards = config.get('sum_rewards', False)
-        self.sum_terminals = config.get('sum_terminals', False)
+        self.collapse_rewards_func = sum if config.get('sum_rewards', False) else None
+        self.collapse_terminals_func = any if config.get('terminal_if_any', False) else all if config.get('terminal_if_all', False) else None
         self.sub_steps = config.get('substeps', 200)
 
         if config.get('render', True):
@@ -89,21 +89,44 @@ class RoboGym(gym.Env, Receptor):
         return self.observe()
 
     def observe(self):
-        """Calls observe() on each addon attached to either the environment or one of its models.
-            Exactly what this does is up to the addons however the general effect should be to restore
-            the environment to its original state ahead of running a new episode.
+        """Calls get_observations on each addon attached to either the environment or one of its models.
+
+        Returns:
+            dict: A dictionary containing a set of observations collected from each addon
         """
         return {k: v for k,v in {name: receptor.get_observations() for name, receptor in self.receptors.items()}.items() if len(v)}
 
     def reward(self):
+        """Calls get_rewards on each addon attached to either the environment or one of its models.
+
+        Returns:
+            dict: A dictionary containing a set of rewards collected from each addon OR the sum of those rewards if the sum_rewards config is enabled
+        """
         ret = {k: v for k,v in {name: receptor.get_rewards() for name, receptor in self.receptors.items()}.items() if len(v)}
-        return self.walk_dict(ret) if self.sum_rewards else ret
+        return self.walk_dict(ret, self.collapse_rewards_func) if self.collapse_rewards_func is not None else ret
 
     def is_terminal(self):
+        """Calls get_is_terminals on each addon attached to either the environment or one of its models.
+
+        Returns:
+            dict: A dictionary containing a set of terminals collected from each addon OR the logical sum of those terminals
+            if either the terminal_if_any or terminal_if_al configs are enabled
+        """
         ret = {k: v for k,v in {name: receptor.get_is_terminals() for name, receptor in self.receptors.items()}.items() if len(v)}
-        return self.walk_dict(ret) > 0 if self.sum_terminals else ret
+        return self.walk_dict(ret, self.collapse_terminals_func) if self.collapse_terminals_func is not None else ret
 
     def step(self, action):
+        """Calls update on each addon attached to either the environment or one of its models.
+
+        Args:
+            action (dict): A dictionary containing actions organised according to the action space defined by the environment
+
+        Returns:
+            dict: updated observations of the environment
+            dict/float: updated set of rewards
+            dict/bool: updated set of flags indicating whether the episode is complete
+            dict: an auxiliary info dictionary (not used in RoboGym)
+        """
         for receptor_name, receptor_action in action.items():
             self.receptors[receptor_name].update_addons(receptor_action)
 

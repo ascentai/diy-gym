@@ -29,7 +29,7 @@ class ReachTarget(Addon):
                 'achieved_orientation': spaces.Box(-10, 10, shape=(3,), dtype='float32')
             })
 
-    def observation(self):
+    def observe(self):
         link_state = p.getLinkState(self.uid, self.frame_id)
 
         obs = {}
@@ -43,7 +43,7 @@ class ReachTarget(Addon):
         return obs
 
     def dist(self):
-        obs = self.observation()
+        obs = self.observe()
         d = np.linalg.norm(np.array(obs['target_position']) - np.array(obs['achieved_position']))
 
         if self.use_ori:

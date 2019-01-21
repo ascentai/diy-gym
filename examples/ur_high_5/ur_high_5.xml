@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <environment>
+    <terminal_if_any>true</terminal_if_any>
+
     <addon name="episode_timer" type="episode_timer">
         <max_steps>50</max_steps>
     </addon>

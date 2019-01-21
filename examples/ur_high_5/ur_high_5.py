@@ -17,6 +17,6 @@ if __name__ == '__main__':
     while True:
         observation, reward, terminal, info = env.step(action)
 
-        if terminal['ur5_l']['slap'] and terminal['ur5_r']['slap']:
+        if terminal:
             print('slap!')
             env.reset()
