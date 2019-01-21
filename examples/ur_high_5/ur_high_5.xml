@@ -14,7 +14,7 @@
     </model>
 
     <model name="ur5_l">
-        <urdf>ur5/ur5_robot.urdf</urdf>
+        <urdf>ur5/ur5_2f.urdf</urdf>
         <xyz>-0.55 0.4 0.65</xyz>
         <rpy>0.0 0.0 -1.57</rpy>
 
@@ -31,8 +31,9 @@
         <addon name="joint_state" type="joint_state_sensor"/>
     </model>
 
+
     <model name="ur5_r">
-        <urdf>ur5/ur5_robot.urdf</urdf>
+        <urdf>ur5/ur5_3f.urdf</urdf>
         <xyz>0.55 0.4 0.65</xyz>
         <rpy>0.0 0.0 1.57</rpy>
 
