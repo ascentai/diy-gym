@@ -5,7 +5,7 @@ from robo_gym import RoboGym
 
 if __name__ == '__main__':
 
-    env = RoboGym('ur_high_5.xml')
+    env = RoboGym('ur_high_5.yaml')
 
     action = env.action_space.sample()
 

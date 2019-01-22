@@ -35,38 +35,30 @@ while True:
 ```
 ### Config Files:
 
-To set up your environment you'll need to write own config file (or just adapt one of the [examples](https://github.com/ascentai/robo-gym/tree/master/examples)). Config files are .xml files that contain all the information RoboGym requires to describe an environment including what objects it should contain, how they should behave and how a learning agent can interact with them.
+To set up your environment you'll need to write own config file (or just adapt one of the [examples](https://github.com/ascentai/robo-gym/tree/master/examples)). Config files are yaml files that contain all the information RoboGym requires to describe an environment including what objects it should contain, how they should behave and how a learning agent can interact with them.
 
-The file itself contains one root node called `environment` which in turns contains any number of `model`s. A model declares an object that will be spawned in the simulation environment. Its only required field is a path to a URDF file that describes its geometry but there are a few additional params for describing pose, etc (see `model.py` for more).
+The file itself contains one top level item called `environment` which in turns contains any number of `model`s. A model declares an object that will be spawned in the simulation environment. RoboGym identifies models in the config file as yaml dictionaries that contain an item with the key `model`; the value of which should be a file path to a URDF describing the geometry of the object to be spawned. Note that RoboGym will search for URDFs in the data folder of this package, the pybullet data folder or you can also just specify the absolute path directly in the config file. There are a few additional params that can be supplied to a model to describe its pose, scale etc (see `model.py` for more).
 
-RoboGym will search for URDFs in the data folder of this package, the pybullet data folder or you can also just specify the absolute path.
+To see what this looks like, let's create an environment in which a Jaco robot arm sits on a table in front of a tiny R2D2 robot using the following config file:
 
-To see what this all looks like, let's create an environment in which a Jaco robot arm sits on a table in front of a tiny R2D2 robot using the following config file:
+```yaml
+environment:
+    plane:
+        model: plane.urdf
 
-```xml
-<?xml version="1.0"?>
-<environment>
-    <model name="plane">
-        <urdf>plane.urdf</urdf>
-    </model>
+    table:
+        model: table/table.urdf
+        xyz: [0.0, 0.4, 0.0]
 
-    <model name="table">
-        <xyz>0.0 0.4 0.0</xyz>
-        <urdf>table/table.urdf</urdf>
-    </model>
+    r2d2:
+        model: r2d2.urdf
+        xyz: [0.1, 0.5, 0.7]
+        rpy: [0.0, 0.0, 3.1415]
+        scale: 0.1
 
-    <model name="r2d2">
-        <xyz>0.1 0.5 0.7</xyz>
-        <rpy>0.0 0.0 3.1415</rpy>
-        <scale>0.1</scale>
-        <urdf>r2d2.urdf</urdf>
-    </model>
-
-    <model name="robot">
-        <urdf>jaco/j2s7s300_standalone.urdf</urdf>
-        <xyz>0.0 0.0 0.65</xyz>
-    </model>
-</environment>
+    robot:
+        model: jaco/j2s7s300_standalone.urdf
+        xyz: [0.0, 0.0, 0.65]
 ```
 If we then instantiate a RoboGym passing in the config file above we'll be met with something that looks like the following:
 ```python
@@ -98,55 +90,51 @@ To actually interact with an environment we'll need to define some add-ons.
 
 ### Add-ons:
 
-An add-on is a chunk of code that can be attached to a model or the environment itself and can be used to interact with the simulation; each add-on has the opportunity to retrieve information from the `action` passed to RoboGym's `step` method or to insert its information into the `observation`, `reward` or `is_terminal` dictionaries returned from `step`/`reset`.
+An add-on is a chunk of code used to interact with the simulation whenever `step` or `reset` is called on a RoboGym instance; each add-on has the opportunity to retrieve information from the `action` dictionary passed to RoboGym's `step` method or to insert its information into the `observation`, `reward` or `is_terminal` dictionaries returned from `step`/`reset`.
 
-RoboGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find the built-in set of add-ons are lacking, you can pretty easily add your own too (more on that below).
+Similar to models, add-ons are identified in the config file by RoboGym as being dictionaries containing an item with the key `addon`; the value of which should be a string referencing one of the addons that has been registered with RoboGym. Add-ons can be attached to either a model or the environment itself by adding their configs to the scope of the the desired parent in the config file.
 
-To see how add-ons work, let's add a few to our Jaco environment to make it a little more functional. Specifically, we'll modify the environment such that an agent can learn to pick up the R2D2 with the Jaco arm while minimising the joint torque expended in doing so. The updated config file will look like this:
-```xml
-<?xml version="1.0"?>
-<environment>
-    <addon name="episode_timer" type="episode_timer">
-        <max_steps>50</max_steps>
-    </addon>
+RoboGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find the built-in set of add-ons are lacking, you can pretty easily add your own too (more on that below). 
 
-    <model name="plane">
-        <urdf>plane.urdf</urdf>
-    </model>
+To see how this all works, let's add a few add-ons to our Jaco environment to make it a little more functional. Specifically, we'll modify the environment such that an agent can learn to pick up the R2D2 with the Jaco arm while minimising the joint torque expended in doing so. The updated config file will look like this:
+```yaml
+environment:
+    episode_length: 50
 
-    <model name="table">
-        <xyz>0.0 0.4 0.0</xyz>
-        <urdf>table/table.urdf</urdf>
-    </model>
+    plane:
+        model: plane.urdf
 
-    <model name="r2d2">
-        <xyz>0.1 0.5 0.7</xyz>
-        <rpy>0.0 0.0 3.1415</rpy>
-        <scale>0.1</scale>
-        <urdf>r2d2.urdf</urdf>
+    table:
+        model: table/table.urdf
+        xyz: [0.0, 0.4, 0.0]
 
-        <addon name="arm_camera" type="camera">
-            <base_frame>left_tip_joint</base_frame>
-            <resolution>200 200</resolution>
-        </addon>
-    </model>
+    r2d2:
+        model: r2d2.urdf
+        xyz: [0.1, 0.5, 0.7]
+        rpy: [0.0, 0.0, 3.1415]
+        scale: 0.1
 
-    <model name="robot">
-        <urdf>jaco/j2s7s300_standalone.urdf</urdf>
-        <xyz>0.0 0.0 0.65</xyz>
+        arm_camera:
+            addon: camera
+            base_frame: left_tip_joint
+            resolution: [200, 200]
 
-        <addon name="controller" type="position_controller">
-            <rest_position>0.0 2.9 0.0 1.3 4.2 1.4 0.0 1.0 1.0 1.0</rest_position>
-            <end_effector_frame>j2s7s300_joint_end_effector</end_effector_frame>
-        </addon>
+    robot:
+        model: jaco/j2s7s300_standalone.urdf
+        xyz: [0.0, 0.0, 0.65]
 
-        <addon name="grab_r2d2" type="reach_target">
-            <target_position>0.1 0.5 0.7</target_position>
-            <frame>j2s7s300_joint_end_effector</frame>
-        </addon>
+        controller:
+            addon: position_controller
+            rest_position: [0.0, 2.9, 0.0, 1.3, 4.2, 1.4, 0.0, 1.0, 1.0, 1.0]
+            end_effector_frame: j2s7s300_joint_end_effector
 
-        <addon name="lazy_robot" type="electricity_cost"/>
-    </model>
+        grab_r2d2:
+            addon: reach_target
+            target_position: [0.1, 0.5, 0.7]
+            frame: j2s7s300_joint_end_effector
+
+        lazy_robot:
+            addon: electricity_cost
 ```
 
 These additions will do the following:
@@ -154,7 +142,6 @@ These additions will do the following:
 * `arm_camera` will capture RGB and depth from the protruding arm of R2D2 and add those to the `observations` dictionary
 * `grab_r2d2` will entice agents to pick up the R2D2 by calculating a penalty for the distance between it and the Jaco's end effector.
 * `lazy_robot` will calculate a penalty for the amount of joint torque currently being applied by the jaco and this penalty will be included in the reward value returned by `step`
-* `episode_timer` will return is_terminal = True after a fixed number of `step`s have occurred
 
 All this information is automatically reflected in RoboGym's action/observation spaces, as well as in the dictionaries it returns `step` and `reset`.
 
@@ -165,9 +152,6 @@ If we now instantiate a new RoboGym passing in this updated config file above we
 The objects returned by `step` will no longer be empty, but will be nested dictionaries keyed according to first the model name then the name of the addon that generated the corresponding piece of data. In the case of the updated Jaco environment, these dictionaries will have the following structure:
 ```
 action
-|---environment
-|   |---episode_timer <class 'numpy.ndarray'>
-|
 |---robot
     |---controller
         |---orientation <class 'numpy.ndarray'>

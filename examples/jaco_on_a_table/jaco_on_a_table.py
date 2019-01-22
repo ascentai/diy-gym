@@ -30,7 +30,7 @@ class ExternalForce(Addon):
 if __name__ == '__main__':
     AddonFactory.register_addon('external_force', ExternalForce)
 
-    env = RoboGym('jaco_on_a_table.xml')
+    env = RoboGym('jaco_on_a_table.yaml')
 
     action = env.action_space.sample()
 

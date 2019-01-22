@@ -23,7 +23,6 @@ class AddonFactory:
             from .rewards.stuck_joint_cost import StuckJointCost
             from .rewards.electricity_cost import ElectricityCost
             from .misc.random_respawn import RandomRespawn
-            from .misc.episode_timer import EpisodeTimer
             from .misc.spawn_multiple import SpawnMultiple
 
             self.addons = {
@@ -33,7 +32,6 @@ class AddonFactory:
                 'random_respawn': RandomRespawn,
                 'joint_state_sensor': JointStateSensor,
                 'end_effector_state_sensor': EndEffectorStateSensor,
-                'episode_timer': EpisodeTimer,
                 'spawn_multiple': SpawnMultiple,
                 'electricity_cost': ElectricityCost,
                 'stuck_joint_cost': StuckJointCost,

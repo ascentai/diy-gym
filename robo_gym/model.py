@@ -20,7 +20,7 @@ class Model(Receptor):
         orientation = p.getQuaternionFromEuler(config.get('rpy', [0.,0.,0.]))
         use_fixed_base = config.get('use_fixed_base', False)
         scale = config.get('scale', 1.0)
-        urdf = config.get('urdf')
+        urdf = config.get('model')
 
         try:
             full_urdf_path = next(os.path.join(path, urdf) for path in urdf_path if os.path.isfile(os.path.join(path, urdf)))
@@ -36,4 +36,4 @@ class Model(Receptor):
         except KeyError:
             pass
 
-        self.addons = {child.attributes['name']: AddonFactory.build(child.attributes['type'], self, child) for child in config.find_all('addon')}
+        self.addons = {child.name: AddonFactory.build(child.get('addon'), self, child) for child in config.find_all('addon')}

@@ -31,8 +31,11 @@ class RoboGym(gym.Env, Receptor):
 
         config = Configuration.from_file(config_file)
 
+        self.name = config.name
+
         self.collapse_rewards_func = sum if config.get('sum_rewards', False) else None
         self.collapse_terminals_func = any if config.get('terminal_if_any', False) else all if config.get('terminal_if_all', False) else None
+        self.episode_length = config.get('episode_length') if config.has_key('episode_length') else None
         self.sub_steps = config.get('substeps', 200)
 
         if config.get('render', True):
@@ -52,9 +55,9 @@ class RoboGym(gym.Env, Receptor):
         gravity = config.get('gravity', [0.0, 0.0, -9.81])
         p.setGravity(gravity[0], gravity[1], gravity[2])
 
-        self.models = {child.attributes['name']: Model(child) for child in config.find_all('model')}
-        self.addons = {child.attributes['name']: AddonFactory.build(child.attributes['type'], self, child) for child in config.find_all('addon')}
-        self.receptors = {**self.models, 'environment': self}
+        self.models = {child.name: Model(child) for child in config.find_all('model')}
+        self.addons = {child.name: AddonFactory.build(child.get('addon'), self, child) for child in config.find_all('addon')}
+        self.receptors = {**self.models, self.name: self}
 
         self.observation_space, self.action_space = spaces.Dict({}), spaces.Dict({})
 
@@ -81,6 +84,8 @@ class RoboGym(gym.Env, Receptor):
         Returns:
             dict: A dictionary containing a set of observations collected from each addon
         """
+        self.step_counter = 0
+
         for receptor in self.receptors.values():
             receptor.reset_addons()
 
@@ -113,6 +118,13 @@ class RoboGym(gym.Env, Receptor):
             if either the terminal_if_any or terminal_if_al configs are enabled
         """
         ret = {k: v for k,v in {name: receptor.get_is_terminals() for name, receptor in self.receptors.items()}.items() if len(v)}
+
+        if self.episode_length is not None:
+            if not self.name in ret:
+                ret[self.name] = {}
+
+            ret[self.name]['episode_timer'] = self.step_counter >= self.episode_length
+
         return self.walk_dict(ret, self.collapse_terminals_func) if self.collapse_terminals_func is not None else ret
 
     def step(self, action):
@@ -130,6 +142,8 @@ class RoboGym(gym.Env, Receptor):
         for receptor_name, receptor_action in action.items():
             self.receptors[receptor_name].update_addons(receptor_action)
 
+        self.step_counter += 1
+
         for _ in range(self.sub_steps):
             p.stepSimulation()
 
@@ -140,25 +154,3 @@ class RoboGym(gym.Env, Receptor):
 
     def walk_dict(self, d, func=sum):
         return func(self.walk_dict(e) if isinstance(e, dict) else e for e in d.values())
-
-
-if __name__ == '__main__':
-
-    env = RoboGym('/home/tom/repos/robo-gym/robo_gym/data/environments/jaco_on_a_table.xml')
-
-    a = env.action_space.sample()
-
-    a['robot']['controller']['position'] = np.array([0.005, 0.005, -0.005])
-    a['robot']['controller']['orientation'] = np.array([-0.02, 0.02, -0.02])
-
-    # a['ur5_l']['position_controller']['position'] = np.array([0.005, 0.0, 0.0])
-    # a['ur5_r']['position_controller']['position'] = np.array([-0.005, 0.0, 0.0])
-    # a['ur5_l']['position_controller']['orientation'][:] = 0
-    # a['ur5_r']['position_controller']['orientation'][:] = 0
-
-    for _ in range(100000):
-        obs, rew, term, info = env.step(a)
-
-        # if term['ur5_l']['slap'] and term['ur5_r']['slap']:
-        #     print('slap!')
-        #     env.reset()
