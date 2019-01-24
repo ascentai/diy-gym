@@ -16,6 +16,7 @@ class AddonFactory:
         def __init__(self):
             from .controllers.position_controller import PositionController
             from .controllers.joint_controller import JointController
+            from .controllers.gripper_controller import GripperController
             from .sensors.camera import Camera
             from .sensors.joint_state_sensor import JointStateSensor
             from .sensors.end_effector_state_sensor import EndEffectorStateSensor
@@ -29,6 +30,7 @@ class AddonFactory:
                 'camera': Camera,
                 'position_controller': PositionController,
                 'joint_controller': JointController,
+                'gripper_controller': GripperController,
                 'random_respawn': RandomRespawn,
                 'joint_state_sensor': JointStateSensor,
                 'end_effector_state_sensor': EndEffectorStateSensor,

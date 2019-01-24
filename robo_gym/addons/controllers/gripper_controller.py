@@ -6,37 +6,45 @@ from ..addon import Addon
 
 class GripperController(Addon):
     def __init__(self, parent, config):
-        super(JointController, self).__init__()
+        super(GripperController, self).__init__()
 
         self.uid = parent.uid
-        self.gripper_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))].index(config.get('end_effector_frame'))
-
-        self.joint_ids = [i for i in range(p.getNumJoints(self.uid)) if p.getJointInfo(self.uid, i)[3] > -1]
+        self.joint_dict = self.joint_name_to_id
         self.rest_position = config.get('rest_position')
-        jointInfo = [p.getJointInfo(self.uid, i) for i in self.joint_ids]
-        self.torque_limit = [info[10] for info in jointInfo]
 
-        self.action_space = spaces.Dict({
-            'position': spaces.Box(-1.0, 1.0, shape=(len(self.joint_ids),), dtype='float32'),
-        })
+        self.operating_width = 0.7
+        self.target = self.rest_position
+        self.torque_limit = p.getJointInfo(self.uid, self.joint_dict['left_outer_knuckle_joint'])[10]
+
+        self.action_space = spaces.Dict(
+            {'position': spaces.Box(0.0, self.operating_width, shape=(1,), dtype='float32')})
 
     def reset(self):
-        for joint_id, angle in zip(self.joint_ids, self.rest_position):
-            p.resetJointState(self.uid, joint_id, angle)
-
-        self.target_state = self.rest_position[:]
+        self.target = self.rest_position
+        p.resetJointState(self.uid, self.joint_dict['left_outer_knuckle_joint'], self.rest_position)
+        p.resetJointState(self.uid, self.joint_dict['right_outer_knuckle_joint'], self.rest_position)
 
     def update(self, action):
 
-        joint_poses = self.target_state + action['position']
+        if self.target <= self.operating_width:
+            self.target += action['position']
 
-        p.setJointMotorControlArray(
-            self.uid,
-            self.joint_ids,
-            p.POSITION_CONTROL,
-            joint_poses,
-            targetVelocities=[0.0] * len(joint_poses),
-            forces=self.torque_limit,
-            positionGains=[0.03] * len(joint_poses),
-            velocityGains=[1.0] * len(joint_poses)
-        )
+        # Update left claw
+        p.setJointMotorControl2(self.uid, self.joint_dict['left_outer_knuckle_joint'], p.POSITION_CONTROL, self.target, force=self.torque_limit)
+        p.setJointMotorControl2(self.uid, self.joint_dict['left_inner_knuckle_joint'], p.POSITION_CONTROL, self.target, force=self.torque_limit)
+        p.setJointMotorControl2(self.uid, self.joint_dict['left_inner_finger_joint' ], p.POSITION_CONTROL, self.target, force=self.torque_limit)
+
+        # Update right claw
+        p.setJointMotorControl2(self.uid, self.joint_dict['right_outer_knuckle_joint'], p.POSITION_CONTROL, self.target, force=self.torque_limit)
+        p.setJointMotorControl2(self.uid, self.joint_dict['right_inner_knuckle_joint'], p.POSITION_CONTROL, self.target, force=self.torque_limit)
+        p.setJointMotorControl2(self.uid, self.joint_dict['right_inner_finger_joint' ], p.POSITION_CONTROL, self.target, force=self.torque_limit)
+
+    @property
+    def joint_name_to_id(self):
+        name_to_id = {}
+
+        for i in range(p.getNumJoints(self.uid)):
+            joint_info = p.getJointInfo(self.uid, i)
+            name_to_id[joint_info[1].decode('UTF-8')] = joint_info[0]
+
+        return name_to_id
