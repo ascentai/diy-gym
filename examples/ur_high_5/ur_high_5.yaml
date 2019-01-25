@@ -16,7 +16,8 @@ environment:
 
         gripper_controller:
             addon: gripper_controller
-            rest_position: 0.0
+            rest_position: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            end_effector_frame: wrist_3_joint
 
         position_controller:
             addon: position_controller

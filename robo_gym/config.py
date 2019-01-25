@@ -1,5 +1,6 @@
 import yaml
 
+
 class Configuration:
     @classmethod
     def from_file(cls, file):
@@ -35,7 +36,7 @@ class Configuration:
         '''
         for k, v in self.node.items():
             if isinstance(v, dict) and key in v:
-                yield Configuration(k,v)
+                yield Configuration(k, v)
 
     def find(self, key):
         ''' Finds the first instance of a config which contains the given key
