@@ -4,7 +4,7 @@ import pybullet as p
 
 class ElectricityCost(Addon):
     def __init__(self, parent, config):
-        super(ElectricityCost, self).__init__()
+        super(ElectricityCost, self).__init__(parent, config)
 
         self.multiplier = config.get('multiplier', 1.0)
         self.uid = parent.uid

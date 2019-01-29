@@ -116,7 +116,7 @@ environment:
 
         arm_camera:
             addon: camera
-            base_frame: left_tip_joint
+            frame: left_tip_joint
             resolution: [200, 200]
 
     robot:

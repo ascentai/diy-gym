@@ -6,7 +6,7 @@ from ..addon import Addon
 
 class StuckJointCost(Addon):
     def __init__(self, parent, config):
-        super(StuckJointCost, self).__init__()
+        super(StuckJointCost, self).__init__(parent, config)
 
         self.uid = parent.uid
         self.joint_ids = [i for i in range(p.getNumJoints(self.uid)) if p.getJointInfo(self.uid, i)[3] > -1]

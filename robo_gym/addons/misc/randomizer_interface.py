@@ -6,7 +6,7 @@ from abc import abstractmethod
 
 class RandomizerInterface(Addon):
     def __init__(self, parent, config):
-        super(RandomizerInterface, self).__init__()
+        super(RandomizerInterface, self).__init__(parent, config)
 
         self.uid = parent.uid
 

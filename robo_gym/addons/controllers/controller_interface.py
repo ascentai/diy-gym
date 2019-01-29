@@ -7,7 +7,7 @@ from robo_gym.addons.addon import Addon
 
 class ControllerInterface(Addon):
     def __init__(self, parent, config):
-        super(ControllerInterface, self).__init__()
+        super(ControllerInterface, self).__init__(parent, config)
 
         self.uid = parent.uid
 

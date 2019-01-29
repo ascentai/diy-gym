@@ -26,6 +26,7 @@ class AddonFactory:
             from .rewards.electricity_cost import ElectricityCost
             from .misc.random_respawn import RandomRespawn
             from .misc.spawn_multiple import SpawnMultiple
+            from .misc.draw_coords import DrawCoords
             from .misc.visual_randomizer import VisualRandomizer
             from .misc.dynamics_randomizer import DynamicsRandomizer
 
@@ -44,6 +45,7 @@ class AddonFactory:
                 'reach_target': ReachTarget,
                 'visual_randomizer': VisualRandomizer,
                 'dynamics_randomizer': DynamicsRandomizer,
+                'draw_coords' : DrawCoords
             }
 
     @staticmethod
@@ -86,9 +88,10 @@ class Addon:
         the action and observation spaces into two spaces.Dict spaces which the client can use to understand what actions are accepted by a addon and what will be
         returned by observe(). Technically this isn't required for the environment to function... but just do it anyway.
     """
-    def __init__(self):
+    def __init__(self, parent, config):
         self.action_space = None
         self.observation_space = None
+        self.hide = config.get('hide', False)
 
     def update(self, action):
         """update is executed whenever step() is called on the environment AND the action dictionary passed to step contains an
@@ -182,8 +185,8 @@ class Receptor:
         Action or observation spaces equal to None are ignored and omitted from the dictionary.
         """
         obs_space, act_space = spaces.Dict({}), spaces.Dict({})
-        obs_space.spaces = {name: addon.observation_space for name, addon in self.addons.items() if addon.observation_space is not None}
-        act_space.spaces = {name: addon.action_space for name, addon in self.addons.items() if addon.action_space is not None}
+        obs_space.spaces = {name: addon.observation_space for name, addon in self.addons.items() if addon.observation_space is not None and not addon.hide}
+        act_space.spaces = {name: addon.action_space for name, addon in self.addons.items() if addon.action_space is not None and not addon.hide}
         return obs_space, act_space
 
     def reset_addons(self):

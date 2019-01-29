@@ -19,7 +19,10 @@ class Configuration:
 
     def get(self, key, default=None):
         if key in self.node:
-            return self.node[key]
+            if isinstance(self.node[key], dict):
+                return Configuration(key, self.node[key])
+            else:
+                return self.node[key]
         elif default is not None:
             return default
         else:

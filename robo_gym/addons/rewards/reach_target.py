@@ -7,7 +7,7 @@ from ..addon import Addon
 
 class ReachTarget(Addon):
     def __init__(self, parent, config):
-        super(ReachTarget, self).__init__()
+        super(ReachTarget, self).__init__(parent, config)
 
         self.uid = parent.uid
         self.frame_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))].index(config.get('frame'))

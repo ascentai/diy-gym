@@ -32,7 +32,8 @@ environment:
 
         gripper_camera:
             addon: camera
-            base_frame: j2s7s300_joint_end_effector
+            rpy: [0.0, 3.1415, 0.0]
+            frame: j2s7s300_joint_end_effector
             resolution: [200, 200]
 
         visual_randomizer:

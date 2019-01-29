@@ -2,3 +2,4 @@ numpy
 gym>=0.10
 pybullet
 pyyaml
+tqdm

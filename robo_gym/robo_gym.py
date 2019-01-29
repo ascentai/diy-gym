@@ -59,15 +59,15 @@ class RoboGym(gym.Env, Receptor):
         self.addons = {child.name: AddonFactory.build(child.get('addon'), self, child) for child in config.find_all('addon')}
         self.receptors = {**self.models, self.name: self}
 
+        self.seed()
+        self.reset()
+
         self.observation_space, self.action_space = spaces.Dict({}), spaces.Dict({})
 
         for name, receptor in self.receptors.items():
             obs_space, act_space = receptor.build_spaces()
             if len(obs_space.spaces): self.observation_space.spaces[name] = obs_space
             if len(act_space.spaces): self.action_space.spaces[name] = act_space
-
-        self.seed()
-        self.reset()
 
     def seed(self, seed=None):
         """Set the random seeds for the environment

@@ -5,7 +5,7 @@ from ..addon import Addon
 
 class RandomRespawn(Addon):
     def __init__(self, parent, config):
-        super(RandomRespawn, self).__init__()
+        super(RandomRespawn, self).__init__(parent, config)
 
         self.uid = parent.uid
         self.origin = p.getBasePositionAndOrientation(self.uid)[0]

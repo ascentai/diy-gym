@@ -10,7 +10,7 @@ class ExternalForce(Addon):
     It's used here to show how to define a custom addon and integrate it into RoboGym.
     """
     def __init__(self, parent, config):
-        super(ExternalForce, self).__init__()
+        super(ExternalForce, self).__init__(parent, config)
 
         # store the uid of the parent model
         self.uid = parent.uid

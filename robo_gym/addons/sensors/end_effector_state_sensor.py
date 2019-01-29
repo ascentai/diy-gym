@@ -7,7 +7,7 @@ from ..addon import Addon
 class EndEffectorStateSensor(Addon):
 
     def __init__(self, parent, config):
-        super(EndEffectorStateSensor, self).__init__()
+        super(EndEffectorStateSensor, self).__init__(parent, config)
 
         self.uid = parent.uid
         self.joint_ids = [i for i in range(p.getNumJoints(self.uid)) if p.getJointInfo(self.uid, i)[3] > -1]
