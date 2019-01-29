@@ -14,7 +14,8 @@ class VisualRandomizer(RandomizerInterface):
     def __init__(self, parent, config):
         super(VisualRandomizer, self).__init__(parent, config)
 
-        self.texture_dir = '../../robo_gym/data/textures'
+        self.data_dir = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '/../../data')
+        self.texture_dir = os.path.normpath(self.data_dir + '/textures')
         self.randomize_color = config.get('randomize_color')
         self.reset()
 
@@ -33,21 +34,21 @@ class VisualRandomizer(RandomizerInterface):
     def get_dataset(self):
         print('robo_gym/data/textures folder not found, downloading dataset...')
         self.download_dataset('https://www.robots.ox.ac.uk/~vgg/data/dtd/download/dtd-r1.0.1.tar.gz',
-                              os.path.join(os.getcwd(), '../../robo_gym/data/textures.tar.gz'))
+                              self.data_dir + '/textures.tar.gz')
 
         print('\nDownload complete, extracting dataset...')
-        tf = tarfile.open('../../robo_gym/data/textures.tar.gz')
-        tf.extractall(path='../../robo_gym/data/')
+        tf = tarfile.open(self.data_dir + '/textures.tar.gz')
+        tf.extractall(path=self.data_dir)
         print('Extraction complete...')
 
         os.mkdir(self.texture_dir)
 
-        for texture_path in tqdm(glob.glob('../../robo_gym/data/dtd/images/**/*.jpg', recursive=True)):
+        for texture_path in tqdm(glob.glob(self.data_dir + '/dtd/images/**/*.jpg', recursive=True)):
             shutil.move(texture_path, self.texture_dir)
 
         # Cleanup
-        shutil.rmtree('../../robo_gym/data/dtd')
-        os.remove('../../robo_gym/data/textures.tar.gz')
+        shutil.rmtree(self.data_dir + '/dtd')
+        os.remove(self.data_dir + '/textures.tar.gz')
 
     @staticmethod
     def random_color_generator():
