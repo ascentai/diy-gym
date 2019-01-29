@@ -2,9 +2,17 @@ environment:
     plane:
         model: plane.urdf
 
+        visual_randomizer:
+            addon: visual_randomizer
+            randomize_color: False
+
     table:
         model: table/table.urdf
         xyz: [0.0, 0.4, 0.0]
+
+        visual_randomizer:
+            addon: visual_randomizer
+            randomize_color: False
 
     purple_thing:
         model: random_urdfs/865/865.urdf
@@ -26,6 +34,13 @@ environment:
             addon: camera
             base_frame: j2s7s300_joint_end_effector
             resolution: [200, 200]
+
+        visual_randomizer:
+            addon: visual_randomizer
+            randomize_color: False
+
+        dynamics_randomizer:
+            addon: dynamics_randomizer
         
         joint_state:
             addon: joint_state_sensor

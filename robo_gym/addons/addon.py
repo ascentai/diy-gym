@@ -16,7 +16,8 @@ class AddonFactory:
         def __init__(self):
             from .controllers.position_controller import PositionController
             from .controllers.joint_controller import JointController
-            from .controllers.gripper_controller import GripperController
+            from .controllers.gripper_controller import Gripper2fController
+            from .controllers.gripper_controller import Gripper3fController
             from .sensors.camera import Camera
             from .sensors.joint_state_sensor import JointStateSensor
             from .sensors.end_effector_state_sensor import EndEffectorStateSensor
@@ -25,19 +26,24 @@ class AddonFactory:
             from .rewards.electricity_cost import ElectricityCost
             from .misc.random_respawn import RandomRespawn
             from .misc.spawn_multiple import SpawnMultiple
+            from .misc.visual_randomizer import VisualRandomizer
+            from .misc.dynamics_randomizer import DynamicsRandomizer
 
             self.addons = {
                 'camera': Camera,
                 'position_controller': PositionController,
                 'joint_controller': JointController,
-                'gripper_controller': GripperController,
+                '2f_gripper_controller': Gripper2fController,
+                '3f_gripper_controller': Gripper3fController,
                 'random_respawn': RandomRespawn,
                 'joint_state_sensor': JointStateSensor,
                 'end_effector_state_sensor': EndEffectorStateSensor,
                 'spawn_multiple': SpawnMultiple,
                 'electricity_cost': ElectricityCost,
                 'stuck_joint_cost': StuckJointCost,
-                'reach_target': ReachTarget
+                'reach_target': ReachTarget,
+                'visual_randomizer': VisualRandomizer,
+                'dynamics_randomizer': DynamicsRandomizer,
             }
 
     @staticmethod

@@ -5,17 +5,25 @@ environment:
     plane:
         model: plane.urdf
 
+        visual_randomizer:
+            addon: visual_randomizer
+            randomize_color: False
+
     table:
         model: table/table.urdf
         xyz: [0.0, 0.4, 0.0]
+
+        visual_randomizer:
+            addon: visual_randomizer
+            randomize_color: False
 
     ur5_l:
         model: ur5/ur5_2f.urdf
         xyz: [-0.55, 0.4, 0.65]
         rpy: [0.0, 0.0, -1.57]
 
-        gripper_controller:
-            addon: gripper_controller
+        2f_gripper_controller:
+            addon: 2f_gripper_controller
             rest_position: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
             end_effector_frame: wrist_3_joint
 
@@ -41,6 +49,18 @@ environment:
             addon: position_controller
             rest_position: [-0.07, -0.73, -1.93, -0.36, -0.03, -0.06]
             end_effector_frame: wrist_3_joint
+
+        3f_gripper_controller:
+          addon: 3f_gripper_controller
+          rest_position: [[0.0495, 0.0495, 0.0495], [0.0, 0.0, 0.0], [-0.64, -0.64, -0.64], [0.0, 0.0]]
+          end_effector_frame: wrist_3_joint
+
+        visual_randomizer:
+            addon: visual_randomizer
+            randomize_color: False
+
+        dynamics_randomizer:
+            addon: dynamics_randomizer
 
         slap:
             addon: reach_target
