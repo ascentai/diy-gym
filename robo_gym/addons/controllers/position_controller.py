@@ -21,7 +21,8 @@ class PositionController(ControllerInterface):
         self.gripper_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8')
                            for i in range(p.getNumJoints(self.uid))].index(config.get('end_effector_frame'))
 
-        self.joint_ids = sorted([joint_info[0] for joint_info in self.joint_info_dict.values()])
+        self.joint_ids = sorted([joint_info[0] for joint_info in self.joint_info_dict.values()
+                                 if joint_info[0] <= self.gripper_id])
 
         self.joint_position_lower_limit = [p.getJointInfo(self.uid, joint_id)[8]  for joint_id in self.joint_ids]
         self.joint_position_upper_limit = [p.getJointInfo(self.uid, joint_id)[9]  for joint_id in self.joint_ids]
@@ -54,7 +55,7 @@ class PositionController(ControllerInterface):
             self.joint_position_upper_limit,
             np.subtract(self.joint_position_upper_limit, self.joint_position_lower_limit).tolist(),
             self.rest_position
-        )
+        )[:self.gripper_id]
 
         p.setJointMotorControlArray(
             self.uid,

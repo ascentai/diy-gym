@@ -12,12 +12,12 @@ class Gripper2fController(ControllerInterface):
         self.joint_ids = sorted([joint_id[0] for joint_id in self.joint_info_dict.values()
                                  if joint_id[0] > self.joint_info_dict[config.get('end_effector_frame')][0]])
         self.action_space = spaces.Dict(
-            {'position': spaces.Box(0.0, 0.76, shape=(1,), dtype='float32')})
+            {'position': spaces.Box(0.0, 0.75, shape=(1,), dtype='float32')})
 
     def reset(self):
-        self.target_states = copy.deepcopy(self.rest_position)
         for joint_id, angle in zip(self.joint_ids, self.rest_position):
             p.resetJointState(self.uid, joint_id, angle)
+        self.target_states = copy.deepcopy(self.rest_position)
 
     def update(self, action):
         for i in range(len(self.target_states)):
@@ -45,15 +45,14 @@ class Gripper3fController(ControllerInterface):
         self.palm_joint_ids = sorted([joint_name[0] for joint_name in self.joint_info_dict.values()
                                       if 'palm_finger_' in joint_name[1].decode('UTF-8')])
         self.action_space = spaces.Dict(
-            {'finger_joint1': spaces.Box(0.0495, 1.2218, shape=(3,), dtype='float32'),
-             'finger_joint2': spaces.Box(0.00, 1.5708, shape=(3,), dtype='float32'),
+            {'finger_joint1': spaces.Box(0.0495,  1.2218, shape=(3,), dtype='float32'),
+             'finger_joint2': spaces.Box(0.00,    1.5708, shape=(3,), dtype='float32'),
              'finger_joint3': spaces.Box(-1.2218, 0.0495, shape=(3,), dtype='float32'),
-             'palm_joint': spaces.Box(-0.192, 0.1784, shape=(2,), dtype='float32'),
+             'palm_joint':    spaces.Box(-0.192,  0.1784, shape=(2,), dtype='float32'),
              }
         )
 
     def reset(self):
-        self.target_states = copy.deepcopy(self.rest_position)
 
         # Reset finger joints 1
         for joint_id, angle in zip(self.finger_joint_1_ids, self.rest_position[0]):
@@ -70,6 +69,8 @@ class Gripper3fController(ControllerInterface):
         # Reset palm joints
         for joint_id, angle in zip(self.palm_joint_ids, self.rest_position[3]):
             p.resetJointState(self.uid, joint_id, angle)
+
+        self.target_states = copy.deepcopy(self.rest_position)
 
     def update(self, action):
         # Update finger joints 1

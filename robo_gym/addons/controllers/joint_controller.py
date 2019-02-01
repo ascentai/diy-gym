@@ -12,7 +12,8 @@ class JointController(ControllerInterface):
         self.gripper_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in
                            range(p.getNumJoints(self.uid))].index(config.get('end_effector_frame'))
 
-        self.joint_ids = sorted([joint_info[0] for joint_info in self.joint_info_dict.values()])
+        self.joint_ids = sorted([joint_info[0] for joint_info in self.joint_info_dict.values()
+                                 if joint_info[0] <= self.gripper_id])
         self.torque_limit = [p.getJointInfo(self.uid, joint_id)[10] for joint_id in self.joint_ids]
 
         self.action_space = spaces.Dict({

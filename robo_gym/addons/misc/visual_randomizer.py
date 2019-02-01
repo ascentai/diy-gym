@@ -16,7 +16,7 @@ class VisualRandomizer(RandomizerInterface):
 
         self.data_dir = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '/../../data')
         self.texture_dir = os.path.normpath(self.data_dir + '/textures')
-        self.randomize_color = config.get('randomize_color')
+        self.randomize_color = config.get('randomize_color', False)
         self.reset()
 
     def reset(self):

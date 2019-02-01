@@ -556,6 +556,7 @@
       </geometry>
     </collision>
   </link>
+
   <joint name="left_outer_knuckle_joint" type="revolute">
     <origin rpy="2.29579632679 0 0" xyz="0 -0.030601 0.054905"/>
     <parent link="robotiq_arg2f_base_link"/>
@@ -625,6 +626,7 @@
     <parent link="right_inner_finger"/>
     <child  link="right_finger_pad"/>
   </joint>
+
   <transmission name="finger_joint_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="left_outer_knuckle_joint">
@@ -634,5 +636,32 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
+
+  <gazebo reference="left_outer_knuckle">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="left_outer_finger">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="left_inner_finger">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="left_finger_pad">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+
+
+  <gazebo reference="right_outer_knuckle">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="right_outer_finger">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="right_inner_finger">
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="right_finger_pad">
+    <selfCollide>true</selfCollide>
+  </gazebo>
 
 </robot>
