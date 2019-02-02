@@ -1,6 +1,6 @@
 environment:
     terminal_if_any: true
-    episode_length: 50
+    episode_length: 40
 
     plane:
         model: plane.urdf

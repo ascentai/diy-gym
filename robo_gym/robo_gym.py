@@ -7,6 +7,7 @@ import numpy as np
 from .config import Configuration
 from .model import Model
 from .addons.addon import AddonFactory, Receptor
+from .utils import walk_dict, get_bounds_for_space, get_desc_for_space, flatten, unflatten
 
 
 class RoboGym(gym.Env, Receptor):
@@ -32,9 +33,6 @@ class RoboGym(gym.Env, Receptor):
         config = Configuration.from_file(config_file)
 
         self.name = config.name
-
-        self.collapse_rewards_func = sum if config.get('sum_rewards', False) else None
-        self.collapse_terminals_func = any if config.get('terminal_if_any', False) else all if config.get('terminal_if_all', False) else None
         self.episode_length = config.get('episode_length') if config.has_key('episode_length') else None
         self.sub_steps = config.get('substeps', 200)
 
@@ -59,6 +57,11 @@ class RoboGym(gym.Env, Receptor):
         self.addons = {child.name: AddonFactory.build(child.get('addon'), self, child) for child in config.find_all('addon')}
         self.receptors = {**self.models, self.name: self}
 
+        self.collapse_rewards_func = sum if config.get('sum_rewards', False) else None
+        self.collapse_terminals_func = any if config.get('terminal_if_any', False) else all if config.get('terminal_if_all', False) else None
+        self.flatten_observations = config.get('flatten_observations', False)
+        self.flatten_actions = config.get('flatten_actions', False)
+
         self.seed()
         self.reset()
 
@@ -68,6 +71,20 @@ class RoboGym(gym.Env, Receptor):
             obs_space, act_space = receptor.build_spaces()
             if len(obs_space.spaces): self.observation_space.spaces[name] = obs_space
             if len(act_space.spaces): self.action_space.spaces[name] = act_space
+
+        if self.flatten_observations:
+            self.original_observation_space = self.observation_space
+            lows = flatten(get_bounds_for_space(self.observation_space, low_not_high=True))
+            highs = flatten(get_bounds_for_space(self.observation_space, low_not_high=False))
+            self.observation_space = gym.spaces.Box(low=lows, high=highs)
+            self.observation_desc = get_desc_for_space(self.original_observation_space)
+
+        if self.flatten_actions:
+            self.original_action_space = self.action_space
+            lows = flatten(get_bounds_for_space(self.action_space, low_not_high=True))
+            highs = flatten(get_bounds_for_space(self.action_space, low_not_high=False))
+            self.action_space = gym.spaces.Box(low=lows, high=highs)
+            self.action_desc = get_desc_for_space(self.original_action_space)
 
     def seed(self, seed=None):
         """Set the random seeds for the environment
@@ -99,7 +116,9 @@ class RoboGym(gym.Env, Receptor):
         Returns:
             dict: A dictionary containing a set of observations collected from each addon
         """
-        return {k: v for k,v in {name: receptor.get_observations() for name, receptor in self.receptors.items()}.items() if len(v)}
+        ret = {k: v for k,v in {name: receptor.get_observations() for name, receptor in self.receptors.items()}.items() if len(v)}
+
+        return flatten(ret) if self.flatten_observations else ret
 
     def reward(self):
         """Calls get_rewards on each addon attached to either the environment or one of its models.
@@ -108,7 +127,7 @@ class RoboGym(gym.Env, Receptor):
             dict: A dictionary containing a set of rewards collected from each addon OR the sum of those rewards if the sum_rewards config is enabled
         """
         ret = {k: v for k,v in {name: receptor.get_rewards() for name, receptor in self.receptors.items()}.items() if len(v)}
-        return self.walk_dict(ret, self.collapse_rewards_func) if self.collapse_rewards_func is not None else ret
+        return walk_dict(ret, self.collapse_rewards_func) if self.collapse_rewards_func is not None else ret
 
     def is_terminal(self):
         """Calls get_is_terminals on each addon attached to either the environment or one of its models.
@@ -125,7 +144,7 @@ class RoboGym(gym.Env, Receptor):
 
             ret[self.name]['episode_timer'] = self.step_counter >= self.episode_length
 
-        return self.walk_dict(ret, self.collapse_terminals_func) if self.collapse_terminals_func is not None else ret
+        return walk_dict(ret, self.collapse_terminals_func) if self.collapse_terminals_func is not None else ret
 
     def step(self, action):
         """Calls update on each addon attached to either the environment or one of its models.
@@ -139,6 +158,9 @@ class RoboGym(gym.Env, Receptor):
             dict/bool: updated set of flags indicating whether the episode is complete
             dict: an auxiliary info dictionary (not used in RoboGym)
         """
+        if self.flatten_actions:
+            action = unflatten(action, self.original_action_space)
+
         for receptor_name, receptor_action in action.items():
             self.receptors[receptor_name].update_addons(receptor_action)
 
@@ -151,6 +173,3 @@ class RoboGym(gym.Env, Receptor):
 
     def close(self):
         p.disconnect()
-
-    def walk_dict(self, d, func=sum):
-        return func(self.walk_dict(e) if isinstance(e, dict) else e for e in d.values())

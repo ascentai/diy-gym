@@ -13,7 +13,7 @@ if __name__ == '__main__':
         action['ur5_l']['position_controller']['position'] = np.array([0.005, 0.0, 0.0])
         action['ur5_l']['position_controller']['orientation'][:] = 0
 
-        action['ur5_r']['controller']['position'] = np.array([-0.000, 0.0, 0.0])
+        action['ur5_r']['controller']['position'] = np.array([-0.005, 0.0, 0.0])
         action['ur5_r']['controller']['orientation'][:] = 0
 
         observation, reward, terminal, info = env.step(action)
