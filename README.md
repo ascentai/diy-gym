@@ -99,7 +99,7 @@ RoboGym has a bunch of add-ons built-in to define common sensors, actuators and 
 To see how this all works, let's add a few add-ons to our Jaco environment to make it a little more functional. Specifically, we'll modify the environment such that an agent can learn to pick up the R2D2 with the Jaco arm while minimising the joint torque expended in doing so. The updated config file will look like this:
 ```yaml
 environment:
-    episode_length: 50
+    max_episode_steps: 50
 
     plane:
         model: plane.urdf

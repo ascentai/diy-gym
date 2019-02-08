@@ -1,12 +1,13 @@
 import gym
 from gym import spaces
 from gym.utils import seeding
+from collections import OrderedDict
 import pybullet as p
 import numpy as np
 
 from .config import Configuration
 from .model import Model
-from .addons.addon import AddonFactory, Receptor
+from .addons.addon import AddonFactory, Addon, Receptor
 from .utils import walk_dict, get_bounds_for_space, get_desc_for_space, flatten, unflatten
 
 
@@ -33,8 +34,9 @@ class RoboGym(gym.Env, Receptor):
         config = Configuration.from_file(config_file)
 
         self.name = config.name
-        self.episode_length = config.get('episode_length') if config.has_key('episode_length') else None
+        self._max_episode_steps = config.get('max_episode_steps') if config.has_key('max_episode_steps') else None
         self.sub_steps = config.get('substeps', 200)
+        self.hot_start = config.get('hot_start', 1)
 
         if config.get('render', True):
             distance = config.get('camera_distance', 2.0)
@@ -53,9 +55,9 @@ class RoboGym(gym.Env, Receptor):
         gravity = config.get('gravity', [0.0, 0.0, -9.81])
         p.setGravity(gravity[0], gravity[1], gravity[2])
 
-        self.models = {child.name: Model(child) for child in config.find_all('model')}
-        self.addons = {child.name: AddonFactory.build(child.get('addon'), self, child) for child in config.find_all('addon')}
-        self.receptors = {**self.models, self.name: self}
+        self.models = OrderedDict(sorted({child.name: Model(child) for child in config.find_all('model')}.items(), key=lambda t: t[0]))
+        self.addons = OrderedDict(sorted({child.name: AddonFactory.build(child.get('addon'), self, child) for child in config.find_all('addon')}.items(), key=lambda t: t[0]))
+        self.receptors = OrderedDict(sorted({**self.models, self.name: self}.items(), key=lambda t: t[0]))
 
         self.collapse_rewards_func = sum if config.get('sum_rewards', False) else None
         self.collapse_terminals_func = any if config.get('terminal_if_any', False) else all if config.get('terminal_if_all', False) else None
@@ -69,22 +71,22 @@ class RoboGym(gym.Env, Receptor):
 
         for name, receptor in self.receptors.items():
             obs_space, act_space = receptor.build_spaces()
-            if len(obs_space.spaces): self.observation_space.spaces[name] = obs_space
-            if len(act_space.spaces): self.action_space.spaces[name] = act_space
+
+            if len(obs_space.spaces):
+                self.observation_space.spaces[name] = obs_space
+
+            if len(act_space.spaces):
+                self.action_space.spaces[name] = act_space
 
         if self.flatten_observations:
+            lows, highs = [flatten(get_bounds_for_space(self.observation_space, opt)) for opt in [True, False]]
             self.original_observation_space = self.observation_space
-            lows = flatten(get_bounds_for_space(self.observation_space, low_not_high=True))
-            highs = flatten(get_bounds_for_space(self.observation_space, low_not_high=False))
             self.observation_space = gym.spaces.Box(low=lows, high=highs)
-            self.observation_desc = get_desc_for_space(self.original_observation_space)
 
         if self.flatten_actions:
+            lows, highs = (flatten(get_bounds_for_space(self.action_space, opt)) for opt in [True, False])
             self.original_action_space = self.action_space
-            lows = flatten(get_bounds_for_space(self.action_space, low_not_high=True))
-            highs = flatten(get_bounds_for_space(self.action_space, low_not_high=False))
             self.action_space = gym.spaces.Box(low=lows, high=highs)
-            self.action_desc = get_desc_for_space(self.original_action_space)
 
     def seed(self, seed=None):
         """Set the random seeds for the environment
@@ -104,9 +106,11 @@ class RoboGym(gym.Env, Receptor):
         self.step_counter = 0
 
         for receptor in self.receptors.values():
-            receptor.reset_addons()
+            for addon in receptor.addons.values():
+                addon.reset()
 
-        p.stepSimulation()
+        for _ in range(self.hot_start):
+            p.stepSimulation()
 
         return self.observe()
 
@@ -116,7 +120,7 @@ class RoboGym(gym.Env, Receptor):
         Returns:
             dict: A dictionary containing a set of observations collected from each addon
         """
-        ret = {k: v for k,v in {name: receptor.get_observations() for name, receptor in self.receptors.items()}.items() if len(v)}
+        ret = self.walk_addons(lambda addon: addon.observe())
 
         return flatten(ret) if self.flatten_observations else ret
 
@@ -126,7 +130,8 @@ class RoboGym(gym.Env, Receptor):
         Returns:
             dict: A dictionary containing a set of rewards collected from each addon OR the sum of those rewards if the sum_rewards config is enabled
         """
-        ret = {k: v for k,v in {name: receptor.get_rewards() for name, receptor in self.receptors.items()}.items() if len(v)}
+        ret = self.walk_addons(lambda addon: addon.reward())
+
         return walk_dict(ret, self.collapse_rewards_func) if self.collapse_rewards_func is not None else ret
 
     def is_terminal(self):
@@ -134,15 +139,15 @@ class RoboGym(gym.Env, Receptor):
 
         Returns:
             dict: A dictionary containing a set of terminals collected from each addon OR the logical sum of those terminals
-            if either the terminal_if_any or terminal_if_al configs are enabled
+            if either the terminal_if_any or terminal_if_all configs are enabled
         """
-        ret = {k: v for k,v in {name: receptor.get_is_terminals() for name, receptor in self.receptors.items()}.items() if len(v)}
-
-        if self.episode_length is not None:
+        """ CXXAAHT """ # Ayana's first docstring
+        ret = self.walk_addons(lambda addon: addon.is_terminal())
+        if self._max_episode_steps is not None:
             if not self.name in ret:
                 ret[self.name] = {}
 
-            ret[self.name]['episode_timer'] = self.step_counter >= self.episode_length
+            ret[self.name]['episode_timer'] = self.step_counter >= self._max_episode_steps
 
         return walk_dict(ret, self.collapse_terminals_func) if self.collapse_terminals_func is not None else ret
 
@@ -162,7 +167,8 @@ class RoboGym(gym.Env, Receptor):
             action = unflatten(action, self.original_action_space)
 
         for receptor_name, receptor_action in action.items():
-            self.receptors[receptor_name].update_addons(receptor_action)
+            for addon_name, addon_action in receptor_action.items():
+                self.receptors[receptor_name].addons[addon_name].update(addon_action)
 
         self.step_counter += 1
 
@@ -170,6 +176,19 @@ class RoboGym(gym.Env, Receptor):
             p.stepSimulation()
 
         return self.observe(), self.reward(), self.is_terminal(), {}
+
+    def walk_addons(self, func):
+        ret = OrderedDict()
+        for receptor_name, receptor in self.receptors.items():
+            receptor_ret = OrderedDict()
+            for addon_name, addon in receptor.addons.items():
+                addon_ret = func(addon)
+                if addon_ret is not None:
+                    receptor_ret[addon_name] = addon_ret
+            if len(receptor_ret):
+                ret[receptor_name] = receptor_ret
+
+        return ret
 
     def close(self):
         p.disconnect()

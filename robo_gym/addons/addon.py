@@ -1,5 +1,5 @@
 from gym import spaces
-
+from collections import OrderedDict
 
 class AddonFactory:
     """AddonFactory is a singeleton factory class (fancy!) for creating addons from the config file based on a string name.
@@ -178,55 +178,20 @@ class Receptor:
         spawned in the environment as well as the environment itself.
     """
     def __init__(self):
-        self.addons = {}
+        self.addons = OrderedDict()
 
     def build_spaces(self):
         """Collates the action and observation spaces declared by each addon attached to this receptor into a gym.spaces.Dict.
         Action or observation spaces equal to None are ignored and omitted from the dictionary.
         """
         obs_space, act_space = spaces.Dict({}), spaces.Dict({})
-        obs_space.spaces = {name: addon.observation_space for name, addon in self.addons.items() if addon.observation_space is not None and not addon.hide}
-        act_space.spaces = {name: addon.action_space for name, addon in self.addons.items() if addon.action_space is not None and not addon.hide}
+
+        for name, addon in self.addons.items():
+            if not addon.hide:
+                if addon.observation_space is not None:
+                    obs_space.spaces[name] = addon.observation_space
+
+                if addon.action_space is not None:
+                    act_space.spaces[name] = addon.action_space
+
         return obs_space, act_space
-
-    def reset_addons(self):
-        """Calls reset() on each addon attached to this receptor
-        """
-        for addon in self.addons.values():
-            addon.reset()
-
-    def get_is_terminals(self):
-        """Collates the is_terminals reported by each addon attached to this receptor into a dictionary.
-        Is_terminals equal to None are ignored and omitted from the dictionary.
-
-        Returns:
-            dict: dict containing is_terminals (bool) from each addon (excluding any None is_terminals)
-        """
-        return {k: v for k, v in {name: addon.is_terminal() for name, addon in self.addons.items()}.items() if v is not None}
-
-    def get_observations(self):
-        """Collates the observations reported by each addon attached to this receptor into a dictionary.
-        Observations equal to None are ignored and omitted from the dictionary.
-
-        Returns:
-            dict: dict containing observations from each addon (excluding any None observations)
-        """
-        return {k: v for k, v in {name: addon.observe() for name, addon in self.addons.items()}.items() if v is not None}
-
-    def get_rewards(self):
-        """Collates the rewards reported by each addon attached to this receptor into a dictionary.
-        Rewards equal to None are ignored and omitted from the dictionary.
-
-        Returns:
-            dict: dict containing rewards (float) from each addon (excluding any None rewards)
-        """
-        return {k: v for k, v in {name: addon.reward() for name, addon in self.addons.items()}.items() if v is not None}
-
-    def update_addons(self, action):
-        """Calls update() on each addon whose name corresponds to one of the names listed in the action dictionary
-
-            Args:
-                dict: dict containing actions keyed against the name of the addon for which that action is intended
-        """
-        for name, action in action.items():
-            self.addons[name].update(action)
