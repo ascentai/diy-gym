@@ -57,11 +57,11 @@ def unflatten(to_unflatten, action_space):
         elif isinstance(space, spaces.Tuple):
             return (_unflatten(extractor, subspace) for subspace in space.spaces)
         elif isinstance(space, spaces.Discrete):
-            return int(extractor.pop(1))
+            return int(round(extractor.pop(1)))
         elif isinstance(space, spaces.MultiDiscrete):
-            return extractor.pop(space.nvec).astype(np.uint8)
+            return np.round(extractor.pop(space.nvec)).astype(np.uint8)
         elif isinstance(space, spaces.MultiBinary):
-            return extractor.pop(space.n).astype(np.uint8)
+            return np.round(extractor.pop(space.n)).astype(np.uint8)
         elif isinstance(space, spaces.Box):
             return extractor.pop(space.low.size).astype(space.low.dtype).reshape(space.low.shape)
         else:

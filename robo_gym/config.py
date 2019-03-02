@@ -28,6 +28,9 @@ class Configuration:
         else:
             raise KeyError("Couldn't find config and no default provided for config with key: " + key)
 
+    def set(self, key, val):
+        self.node[key] = val
+
     def has_key(self, key):
         return key in self.node
 

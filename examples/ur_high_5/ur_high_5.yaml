@@ -13,6 +13,10 @@ environment:
         model: table/table.urdf
         xyz: [0.0, 0.4, 0.0]
 
+    tray:
+        model: tray/tray.urdf
+        xyz: [0.0, 0.0, 0.0]
+
         visual_randomizer:
             addon: visual_randomizer
             randomize_color: False

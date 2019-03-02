@@ -19,8 +19,8 @@ class Model(Receptor):
 
         self.name = config.name
 
-        position = config.get('xyz', [0.,0.,0.])
-        orientation = p.getQuaternionFromEuler(config.get('rpy', [0.,0.,0.]))
+        self.position = config.get('xyz', [0.,0.,0.])
+        self.orientation = p.getQuaternionFromEuler(config.get('rpy', [0.,0.,0.]))
         use_fixed_base = config.get('use_fixed_base', False)
         scale = config.get('scale', 1.0)
         urdf = config.get('model')
@@ -32,7 +32,7 @@ class Model(Receptor):
 
         self.uid = p.loadURDF(full_urdf_path, useFixedBase=use_fixed_base, globalScaling=scale)
 
-        p.resetBasePositionAndOrientation(self.uid, position, orientation)
+        p.resetBasePositionAndOrientation(self.uid, self.position, self.orientation)
 
         if config.has_key('mass'):
             p.changeDynamics(self.uid, -1, mass=config.get('mass'))
