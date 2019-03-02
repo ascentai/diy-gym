@@ -1,6 +1,11 @@
 import yaml
 
 
+# class and singleton to distinguish whether or not user has passed us a default value
+class _Unspecified(object): pass
+_unspecified = _Unspecified()
+
+
 class Configuration:
     @classmethod
     def from_file(cls, file):
@@ -17,13 +22,13 @@ class Configuration:
         self.node = node
         self.name = name
 
-    def get(self, key, default=None):
+    def get(self, key, default=_unspecified):
         if key in self.node:
             if isinstance(self.node[key], dict):
                 return Configuration(key, self.node[key])
             else:
                 return self.node[key]
-        elif default is not None:
+        elif default is not _unspecified:
             return default
         else:
             raise KeyError("Couldn't find config and no default provided for config with key: " + key)
