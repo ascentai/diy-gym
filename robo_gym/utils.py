@@ -1,6 +1,6 @@
 from gym import spaces
 import numpy as np
-
+from collections import OrderedDict
 
 def get_bounds_for_space(space, low_not_high):
     if isinstance(space, spaces.Discrete):
@@ -12,7 +12,7 @@ def get_bounds_for_space(space, low_not_high):
     elif isinstance(space, spaces.Box):
         return space.low if low_not_high else space.high
     elif isinstance(space, spaces.Dict):
-        return {key: get_bounds_for_space(subspace, low_not_high) for key, subspace in space.spaces.items()}
+        return OrderedDict(sorted({key: get_bounds_for_space(subspace, low_not_high) for key, subspace in space.spaces.items()}.items(), key=lambda t: t[0]))
     elif isinstance(space, spaces.Tuple):
         return (get_bounds_for_space(subspace, low_not_high) for subspace in space.spaces)
     else:
@@ -53,7 +53,7 @@ def flatten(to_flatten):
 def unflatten(to_unflatten, action_space):
     def _unflatten(extractor, space):
         if isinstance(space, spaces.Dict):
-            return {key: _unflatten(extractor, subspace) for key, subspace in space.spaces.items()}
+            return OrderedDict(sorted({key: _unflatten(extractor, subspace) for key, subspace in space.spaces.items()}.items(), key=lambda t: t[0]))
         elif isinstance(space, spaces.Tuple):
             return (_unflatten(extractor, subspace) for subspace in space.spaces)
         elif isinstance(space, spaces.Discrete):

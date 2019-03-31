@@ -12,15 +12,13 @@ from robo_gym import RoboGym
 
 if __name__ == '__main__':
 
-    # np.random.seed(101)
-
     env = RoboGym('pick_and_place.yaml')
 
     while True:
         action = env.action_space.sample()
 
-        # action['ur5']['force_controller']['wrench'] = np.array([150.0, 210.0, 0.0, 0.0, 0.0, 0.0])
-        # action['ur5']['force_controller']['wrench'] = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        action['ur5']['force_controller']['wrench'] = np.array([150.0, 210.0, 0.0, 0.0, 0.0, 0.0])
+        action['ur5']['force_controller']['wrench'] = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         action['ur5']['2f_gripper_controller']['position'] = 0.0
 
         observation, reward, terminal, info = env.step(action)
