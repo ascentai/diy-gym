@@ -227,15 +227,16 @@
   <joint name="ee_fixed_joint" type="fixed">
     <parent link="wrist_3_link"/>
     <child link="ee_link"/>
-    <origin rpy="0.0 0.0 1.57079632679" xyz="0.0 0.0823 0.0"/>
+    <!-- Tool Center Point from Robotiq Docs = 0.241 m -->
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.241 0.0"/>
   </joint>
   <link name="ee_link">
-    <collision>
+    <visual>
       <geometry>
         <box size="0.01 0.01 0.01"/>
       </geometry>
-      <origin rpy="0 0 0" xyz="-0.01 0 0"/>
-    </collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </visual>
   </link>
   <transmission name="shoulder_pan_trans">
     <type>transmission_interface/SimpleTransmission</type>
@@ -312,19 +313,20 @@
   <gazebo reference="ee_link">
     <selfCollide>true</selfCollide>
   </gazebo>
-  <!-- ROS base_link to UR 'Base' Coordinates transform -->
+  <!-- ROS base_link to UR 'Base' Coordinates transform
   <link name="base"/>
   <joint name="base_link-base_fixed_joint" type="fixed">
-    <!-- NOTE: this rotation is only needed as long as base_link itself is
+      NOTE: this rotation is only needed as long as base_link itself is
                  not corrected wrt the real robot (ie: rotated over 180
                  degrees)
-      -->
     <origin rpy="0 0 -3.14159265359" xyz="0 0 0"/>
     <parent link="base_link"/>
     <child link="base"/>
   </joint>
+  -->
 
-  <!-- Frame coincident with all-zeros TCP on UR controller -->
+
+  <!-- Frame coincident with all-zeros Tool Center Point on UR controller -->
   <!-- Attach gripper base here -->
   <joint name="wrist_3_link-gripper_base_fixed_joint" type="fixed">
     <origin rpy="-1.57079632679 0 0" xyz="0 0.0823 0"/>
@@ -421,6 +423,13 @@
     </collision>
   </link>
   <link name="left_finger_pad">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia
+              ixx="3.558E-7" ixy="0"        ixz="0"
+                             iyy="3.558E-7" iyz="0"
+                                            izz="3.558E-7"/>
+    </inertial>
     <visual>
       <geometry>
         <box size="0.0067 0.027 0.065" />
@@ -430,6 +439,25 @@
     <collision>
       <geometry>
         <box size="0.0067 0.027 0.065" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="left_sensor_pad">
+    <inertial>
+      <mass value="0.0001"/>
+      <inertia
+              ixx="1.022E-8" ixy="0"        ixz="0"
+                             iyy="1.022E-8" iyz="0"
+                                            izz="1.022E-8"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.001 0.025 0.035" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.001 0.017 0.035" />
       </geometry>
     </collision>
   </link>
@@ -522,6 +550,13 @@
     </collision>
   </link>
   <link name="right_finger_pad">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia
+              ixx="3.558E-7" ixy="0"        ixz="0"
+                             iyy="3.558E-7" iyz="0"
+                                            izz="3.558E-7"/>
+    </inertial>
     <visual>
       <geometry>
         <box size="0.0067 0.027 0.065" />
@@ -531,6 +566,25 @@
     <collision>
       <geometry>
         <box size="0.0067 0.027 0.065" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="right_sensor_pad">
+    <inertial>
+      <mass value="0.0001"/>
+      <inertia
+              ixx="1.022E-8" ixy="0"        ixz="0"
+                             iyy="1.022E-8" iyz="0"
+                                            izz="1.022E-8"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <box size="0.001 0.025 0.035" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.001 0.017 0.035" />
       </geometry>
     </collision>
   </link>
@@ -591,6 +645,11 @@
     <parent link="left_inner_finger"/>
     <child  link="left_finger_pad"/>
   </joint>
+  <joint name="left_pad_sensor_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0035 0 0.01"/>
+    <parent link="left_finger_pad"/>
+    <child  link="left_sensor_pad"/>
+  </joint>
   <joint name="right_outer_knuckle_joint" type="revolute">
     <origin rpy="2.29579632679 0 3.14159265359" xyz="0 0.030601 0.054905"/>
     <parent link="robotiq_arg2f_base_link"/>
@@ -625,6 +684,11 @@
     <origin rpy="1.57 1.57 0" xyz="0 0.0405 -0.02758"/>
     <parent link="right_inner_finger"/>
     <child  link="right_finger_pad"/>
+  </joint>
+  <joint name="right_pad_sensor_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.0035 0 0.01"/>
+    <parent link="right_finger_pad"/>
+    <child  link="right_sensor_pad"/>
   </joint>
 
   <transmission name="finger_joint_trans">

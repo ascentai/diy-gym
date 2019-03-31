@@ -1,0 +1,86 @@
+environment:
+    render: yes
+    max_episode_steps: 250
+
+    sum_rewards: yes
+    terminal_if_any: yes
+    flatten_observations: no
+    flatten_actions: no
+
+    distance_reward:
+        addon: distance_reward
+        origin: ur5
+        origin_link: ee_fixed_joint
+        target: cube
+        tolerance: 0.03
+
+    plane:
+        model: plane.urdf
+
+    north_wall:
+        model: plane.urdf
+        xyz: [0.0, 0.5, 1]
+        rpy: [0.0, 1.57, -1.57]
+        color: [0, 0, 0, 0]
+        scale: 0.1
+
+    table:
+        model: table/table.urdf
+        xyz: [0.0, 0.0, 0.0]
+
+    cube:
+        model: cube_small.urdf
+        xyz: [0.0, 0.2, 0.62]
+        scale: 2
+
+        random_respawn:
+            addon: random_respawn
+
+    ur5:
+        model: ur5/ur5_2f.urdf
+        xyz: [0.0, -0.4, 0.62]
+        rpy: [0.0, 0.0, 0.0]
+
+        wrist_coordinates:
+            addon: draw_coords
+            frame: wrist_3_joint
+            xyz: [0.25, 0.0, 0.0]
+
+        load_sensor:
+            addon: force_sensor
+            link_name: wrist_3_joint
+            enable_offset: True
+            axis: y
+
+        pad_coordinates:
+            addon: draw_coords
+            frame: right_pad_sensor_joint
+            xyz: [0.25, 0.0, 0.0]
+
+        r_pad_force_sensor:
+            addon: force_sensor
+            link_name: right_pad_sensor_joint
+            axis: x
+
+        l_pad_force_sensor:
+            addon: force_sensor
+            link_name: left_pad_sensor_joint
+            axis: x
+
+        apply_force:
+            addon: external_force
+            joint: ee_fixed_joint
+            random: False
+
+        force_controller:
+            addon: force_controller
+            rest_position: [1.57, -1.57, 1.57, -1.57, -1.57, 0.0]
+            end_effector_frame: wrist_3_joint
+            disable_motors: False
+
+        2f_gripper_controller:
+            addon: 2f_gripper_controller
+            rest_position: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+            end_effector_frame: ee_fixed_joint
+
+

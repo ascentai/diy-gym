@@ -15,37 +15,51 @@ class AddonFactory:
         """
         def __init__(self):
             from .controllers.position_controller import PositionController
+            from .controllers.force_controller import ForceController
             from .controllers.joint_controller import JointController
             from .controllers.gripper_controller import Gripper2fController
             from .controllers.gripper_controller import Gripper3fController
             from .sensors.camera import Camera
             from .sensors.joint_state_sensor import JointStateSensor
             from .sensors.end_effector_state_sensor import EndEffectorStateSensor
+            from .sensors.object_state_sensor import ObjectStateSensor
+            from .sensors.distance_sensor import DistanceSensor
+            from .sensors.force_sensor import ForceSensor
             from .rewards.reach_target import ReachTarget
             from .rewards.stuck_joint_cost import StuckJointCost
             from .rewards.electricity_cost import ElectricityCost
+            from .rewards.gripper_env_reward import GripperEnvReward
+            from .rewards.distance_reward import DistanceReward
             from .misc.random_respawn import RandomRespawn
             from .misc.spawn_multiple import SpawnMultiple
             from .misc.draw_coords import DrawCoords
+            from .misc.apply_force import ExternalForce
             from .misc.visual_randomizer import VisualRandomizer
             from .misc.dynamics_randomizer import DynamicsRandomizer
 
             self.addons = {
-                'camera': Camera,
-                'position_controller': PositionController,
-                'joint_controller': JointController,
-                '2f_gripper_controller': Gripper2fController,
-                '3f_gripper_controller': Gripper3fController,
-                'random_respawn': RandomRespawn,
-                'joint_state_sensor': JointStateSensor,
+                'position_controller':       PositionController,
+                'force_controller':          ForceController,
+                'joint_controller':          JointController,
+                '2f_gripper_controller':     Gripper2fController,
+                '3f_gripper_controller':     Gripper3fController,
+                'camera':                    Camera,
+                'joint_state_sensor':        JointStateSensor,
                 'end_effector_state_sensor': EndEffectorStateSensor,
-                'spawn_multiple': SpawnMultiple,
-                'electricity_cost': ElectricityCost,
-                'stuck_joint_cost': StuckJointCost,
-                'reach_target': ReachTarget,
-                'visual_randomizer': VisualRandomizer,
-                'dynamics_randomizer': DynamicsRandomizer,
-                'draw_coords' : DrawCoords
+                'object_state_sensor':       ObjectStateSensor,
+                'distance_sensor':           DistanceSensor,
+                'force_sensor':              ForceSensor,
+                'reach_target':              ReachTarget,
+                'stuck_joint_cost':          StuckJointCost,
+                'electricity_cost':          ElectricityCost,
+                'gripper_env_reward':        GripperEnvReward,
+                'distance_reward':           DistanceReward,
+                'random_respawn':            RandomRespawn,
+                'spawn_multiple':            SpawnMultiple,
+                'draw_coords':               DrawCoords,
+                'external_force':            ExternalForce,
+                'visual_randomizer':         VisualRandomizer,
+                'dynamics_randomizer':       DynamicsRandomizer,
             }
 
     @staticmethod

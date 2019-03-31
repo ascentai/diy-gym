@@ -41,7 +41,7 @@ def flatten(to_flatten):
             for val in to_flatten.values():
                 l.extend(_flatten(val))
         elif isinstance(to_flatten, tuple):
-            for val in to_flatten.values():
+            for val in to_flatten:
                 l.extend(_flatten(val))
         else:
             l.append(np.reshape(to_flatten, -1))

@@ -22,7 +22,7 @@ class PositionController(ControllerInterface):
                            for i in range(p.getNumJoints(self.uid))].index(config.get('end_effector_frame'))
 
         self.joint_ids = sorted([joint_info[0] for joint_info in self.joint_info_dict.values()
-                                 if joint_info[0] <= self.gripper_id])
+                                 if joint_info[0] < self.gripper_id and joint_info[3] > -1])
 
         self.joint_position_lower_limit = [p.getJointInfo(self.uid, joint_id)[8]  for joint_id in self.joint_ids]
         self.joint_position_upper_limit = [p.getJointInfo(self.uid, joint_id)[9]  for joint_id in self.joint_ids]
@@ -31,8 +31,8 @@ class PositionController(ControllerInterface):
         self.target_states = [np.array(s) for s in p.getLinkState(self.uid, self.gripper_id)]
 
         self.action_space = spaces.Dict({
-            'position': spaces.Box(-1.0, 1.0, shape=(3,), dtype='float32'),
-            'orientation': spaces.Box(-1.0, 1.0, shape=(3,), dtype='float32')
+            'position': spaces.Box(-0.001, 0.001, shape=(3,), dtype='float32'),
+            'orientation': spaces.Box(-0.001, 0.001, shape=(3,), dtype='float32')
         })
 
         self.reset()
@@ -43,7 +43,7 @@ class PositionController(ControllerInterface):
         self.target_states = [np.array(s) for s in p.getLinkState(self.uid, self.gripper_id)]
 
     def update(self, action):
-        self.target_states[0] += action['position']
+        self.target_states[0] = action['position']
         self.target_states[1] = quaternion_multiply(self.target_states[1], p.getQuaternionFromEuler(action['orientation']))
 
         joint_poses = p.calculateInverseKinematics(
@@ -55,7 +55,7 @@ class PositionController(ControllerInterface):
             self.joint_position_upper_limit,
             np.subtract(self.joint_position_upper_limit, self.joint_position_lower_limit).tolist(),
             self.rest_position
-        )[:self.gripper_id]
+        )[:self.gripper_id - 1]
 
         p.setJointMotorControlArray(
             self.uid,
@@ -64,6 +64,6 @@ class PositionController(ControllerInterface):
             joint_poses,
             targetVelocities=[0.0] * len(joint_poses),
             forces=self.torque_limit,
-            positionGains=[0.03] * len(joint_poses),
+            positionGains=[0.0015] * len(joint_poses),
             velocityGains=[1.0] * len(joint_poses)
         )

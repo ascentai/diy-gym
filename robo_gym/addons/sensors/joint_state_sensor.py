@@ -26,9 +26,10 @@ class JointStateSensor(Addon):
     def observe(self):
         joint_states = p.getJointStates(self.uid, self.joint_ids)
 
-        obs = {}
-        obs['position'] = [state[0] for state in joint_states]
-        obs['velocity'] = [state[1] for state in joint_states]
-        obs['effort'] = [state[3] for state in joint_states]
+        obs = {
+            'position': [state[0] for state in joint_states],
+            'velocity': [state[1] for state in joint_states],
+            'effort':   [state[3] for state in joint_states],
+        }
 
         return obs

@@ -10,7 +10,8 @@ class Gripper2fController(ControllerInterface):
 
         # Get all joints associated only with the gripper
         self.joint_ids = sorted([joint_id[0] for joint_id in self.joint_info_dict.values()
-                                 if joint_id[0] > self.joint_info_dict[config.get('end_effector_frame')][0]])
+                                 if joint_id[0] > self.joint_info_dict[config.get('end_effector_frame')][0]
+                                 and joint_id[3] > -1])
         self.action_space = spaces.Dict(
             {'position': spaces.Box(0.0, 0.75, shape=(1,), dtype='float32')})
 
@@ -20,6 +21,7 @@ class Gripper2fController(ControllerInterface):
         self.target_states = copy.deepcopy(self.rest_position)
 
     def update(self, action):
+        # Controls the closing and opening of the gripper
         for i in range(len(self.target_states)):
             self.target_states[i] = action['position']
 
@@ -28,8 +30,14 @@ class Gripper2fController(ControllerInterface):
             self.joint_ids,
             p.POSITION_CONTROL,
             self.target_states,
-            forces=[p.getJointInfo(self.uid, i)[10] for i in self.joint_ids]
+            forces=[p.getJointInfo(self.uid, i)[10] for i in self.joint_ids],
         )
+
+    # def observe(self):
+    #     return {'position': self.target_states[0], 'is_open': self.is_open()}
+    #
+    # def is_open(self):
+    #     return self.target_states[0] < 0.75
 
 
 class Gripper3fController(ControllerInterface):
@@ -37,13 +45,13 @@ class Gripper3fController(ControllerInterface):
         super(Gripper3fController, self).__init__(parent, config)
 
         self.finger_joint_1_ids = sorted([joint_name[0] for joint_name in self.joint_info_dict.values()
-                                          if '_joint_1' in joint_name[1].decode('UTF-8')])
+                                          if '_joint_1' in joint_name[1].decode('UTF-8') and joint_name[3] > -1])
         self.finger_joint_2_ids = sorted([joint_name[0] for joint_name in self.joint_info_dict.values()
-                                          if '_joint_2' in joint_name[1].decode('UTF-8')])
+                                          if '_joint_2' in joint_name[1].decode('UTF-8') and joint_name[3] > -1])
         self.finger_joint_3_ids = sorted([joint_name[0] for joint_name in self.joint_info_dict.values()
-                                          if '_joint_3' in joint_name[1].decode('UTF-8')])
+                                          if '_joint_3' in joint_name[1].decode('UTF-8') and joint_name[3] > -1])
         self.palm_joint_ids = sorted([joint_name[0] for joint_name in self.joint_info_dict.values()
-                                      if 'palm_finger_' in joint_name[1].decode('UTF-8')])
+                                      if 'palm_finger_' in joint_name[1].decode('UTF-8') and joint_name[3] > -1])
         self.action_space = spaces.Dict(
             {'finger_joint1': spaces.Box(0.0495,  1.2218, shape=(3,), dtype='float32'),
              'finger_joint2': spaces.Box(0.00,    1.5708, shape=(3,), dtype='float32'),

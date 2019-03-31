@@ -13,7 +13,7 @@ class ControllerInterface(Addon):
 
         # key = joint_id : value = joint_info
         self.joint_info_dict = {p.getJointInfo(self.uid, i)[1].decode('UTF-8'): p.getJointInfo(self.uid, i)
-                                for i in range(p.getNumJoints(self.uid)) if p.getJointInfo(self.uid, i)[3] > -1}
+                                for i in range(p.getNumJoints(self.uid))}
         self.rest_position = config.get('rest_position')
         self.target_states = self.rest_position[:]
 

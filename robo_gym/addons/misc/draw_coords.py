@@ -18,8 +18,8 @@ class DrawCoords(Addon):
         self.T_offset = self.trans_from_xyz_quat(xyz, p.getQuaternionFromEuler(rpy))
 
         self.lines = [p.addUserDebugLine([0,0,0], vec, vec) for vec in np.eye(3)]
-        self.frame_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))].index(config.get('frame')) if config.has_key('frame') else -1
         self.uid = parent.uid if isinstance(parent, Model) else -1
+        self.frame_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))].index(config.get('frame')) if config.has_key('frame') else -1
 
     def update(self, action):
         if self.frame_id >= 0:
