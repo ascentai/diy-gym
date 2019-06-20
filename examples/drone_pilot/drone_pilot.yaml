@@ -1,0 +1,61 @@
+terminal_if_any: yes
+camera_distance: 10.0
+max_episode_steps: 10000
+
+plane:
+    model: 'grass/plane.urdf'
+    xyz: [0,0,0.02]
+
+target:
+    model: sphere2red_nocol.urdf
+    xyz: [0,0,5.0]
+    scale: 0.5
+    color: [1,0,0,0.5]
+
+    pose:
+        addon: object_state_sensor
+
+    respawn:
+        addon: respawn
+        position_range: [10.0,10.0,2.0]
+
+drone:
+    model: hector_quadrotor/quadrotor.urdf
+    mass: 4.0
+    xyz: [0,0,0.5]
+    color: [0.1,0.1,0.1,1]
+
+    pose:
+        addon: object_state_sensor
+    
+    respawn:
+        addon: respawn
+
+    motor1:
+        addon: propellor
+        frame: motor1_joint
+        rotor_direction: CCW
+
+    motor2:
+        addon: propellor
+        frame: motor2_joint
+        rotor_direction: CW
+
+    motor3:
+        addon: propellor
+        frame: motor3_joint
+        rotor_direction: CCW
+
+    motor4:
+        addon: propellor
+        frame: motor4_joint
+        rotor_direction: CW
+
+    fell_over:
+        addon: fell_over
+
+reach_goal:
+    addon: reach_target
+    source_model: drone
+    target_model: target
+    tolerance: 0.1

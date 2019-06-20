@@ -1,0 +1,1447 @@
+camera_distance: 12
+camera_yaw: 0
+plane:
+  model: grass/plane.urdf
+r2d2:
+  mass: 50
+  model: r2d2.urdf
+  wheel_driver:
+    addon: joint_controller
+    control_mode: velocity
+    joints:
+    - left_front_wheel_joint
+    - left_back_wheel_joint
+    - right_front_wheel_joint
+    - right_back_wheel_joint
+  xyz:
+  - -3.5
+  - -5.5
+  - 0.5
+wall_0:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.5
+  - 5.0
+  - 0.0
+wall_1:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.0
+  - -0.5
+  - 0.0
+wall_10:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.5
+  - -3.0
+  - 0.0
+wall_100:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.5
+  - 0.0
+  - 0.0
+wall_101:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -0.5
+  - -2.0
+  - 0.0
+wall_102:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.0
+  - 1.5
+  - 0.0
+wall_103:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.0
+  - 1.5
+  - 0.0
+wall_104:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -0.5
+  - -5.0
+  - 0.0
+wall_105:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.5
+  - 1.0
+  - 0.0
+wall_106:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.5
+  - -5.0
+  - 0.0
+wall_107:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.0
+  - 2.5
+  - 0.0
+wall_108:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - -2.5
+  - 0.0
+wall_109:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.0
+  - -3.5
+  - 0.0
+wall_11:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.0
+  - -4.5
+  - 0.0
+wall_110:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - -1.5
+  - 0.0
+wall_111:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - -4.5
+  - 0.0
+wall_112:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.5
+  - -1.0
+  - 0.0
+wall_113:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 4.5
+  - 2.0
+  - 0.0
+wall_114:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - -0.5
+  - 0.0
+wall_115:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.5
+  - -5.0
+  - 0.0
+wall_116:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.5
+  - 5.0
+  - 0.0
+wall_117:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.0
+  - 1.5
+  - 0.0
+wall_118:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -0.5
+  - -1.0
+  - 0.0
+wall_12:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.0
+  - -1.5
+  - 0.0
+wall_13:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - -3.5
+  - 0.0
+wall_14:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.5
+  - 2.0
+  - 0.0
+wall_15:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.5
+  - 4.0
+  - 0.0
+wall_16:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.5
+  - -3.0
+  - 0.0
+wall_17:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.0
+  - 2.5
+  - 0.0
+wall_18:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.5
+  - -5.0
+  - 0.0
+wall_19:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.0
+  - -4.5
+  - 0.0
+wall_2:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.5
+  - 5.0
+  - 0.0
+wall_20:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.5
+  - 5.0
+  - 0.0
+wall_21:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - -3.5
+  - 0.0
+wall_22:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.0
+  - -3.5
+  - 0.0
+wall_23:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.0
+  - -4.5
+  - 0.0
+wall_24:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - 3.5
+  - 0.0
+wall_25:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.5
+  - 2.0
+  - 0.0
+wall_26:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - 2.5
+  - 0.0
+wall_27:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - 4.5
+  - 0.0
+wall_28:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.5
+  - 1.0
+  - 0.0
+wall_29:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.0
+  - 0.5
+  - 0.0
+wall_3:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - -1.0
+  - 0.0
+wall_30:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.0
+  - -2.5
+  - 0.0
+wall_31:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.5
+  - 3.0
+  - 0.0
+wall_32:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.0
+  - -0.5
+  - 0.0
+wall_33:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.0
+  - -4.5
+  - 0.0
+wall_34:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.0
+  - 0.5
+  - 0.0
+wall_35:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - 1.0
+  - 0.0
+wall_36:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - -0.5
+  - 0.0
+wall_37:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.5
+  - 4.0
+  - 0.0
+wall_38:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.5
+  - 0.0
+  - 0.0
+wall_39:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.0
+  - 0.5
+  - 0.0
+wall_4:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.0
+  - 3.5
+  - 0.0
+wall_40:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.5
+  - -2.0
+  - 0.0
+wall_41:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.5
+  - 5.0
+  - 0.0
+wall_42:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - 3.5
+  - 0.0
+wall_43:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - -1.5
+  - 0.0
+wall_44:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.5
+  - -3.0
+  - 0.0
+wall_45:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 4.0
+  - -3.5
+  - 0.0
+wall_46:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.0
+  - 4.5
+  - 0.0
+wall_47:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - 0.5
+  - 0.0
+wall_48:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -0.5
+  - 2.0
+  - 0.0
+wall_49:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - -2.5
+  - 0.0
+wall_5:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.5
+  - 4.0
+  - 0.0
+wall_50:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.0
+  - 1.5
+  - 0.0
+wall_51:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.0
+  - -2.5
+  - 0.0
+wall_52:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.5
+  - -1.0
+  - 0.0
+wall_53:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.5
+  - 0.0
+  - 0.0
+wall_54:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.0
+  - -2.5
+  - 0.0
+wall_55:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.5
+  - -5.0
+  - 0.0
+wall_56:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.0
+  - -1.5
+  - 0.0
+wall_57:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -0.5
+  - 1.0
+  - 0.0
+wall_58:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.5
+  - 5.0
+  - 0.0
+wall_59:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.5
+  - 3.0
+  - 0.0
+wall_6:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 4.5
+  - 4.0
+  - 0.0
+wall_60:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.0
+  - -0.5
+  - 0.0
+wall_61:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.5
+  - -2.0
+  - 0.0
+wall_62:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.0
+  - -3.5
+  - 0.0
+wall_63:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -0.5
+  - 5.0
+  - 0.0
+wall_64:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - -5.0
+  - 0.0
+wall_65:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.5
+  - -2.0
+  - 0.0
+wall_66:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - 1.5
+  - 0.0
+wall_67:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.0
+  - 3.5
+  - 0.0
+wall_68:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - 4.0
+  - 0.0
+wall_69:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.0
+  - -0.5
+  - 0.0
+wall_7:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.0
+  - -3.5
+  - 0.0
+wall_70:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.5
+  - -2.0
+  - 0.0
+wall_71:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.5
+  - 3.0
+  - 0.0
+wall_72:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.5
+  - -3.0
+  - 0.0
+wall_73:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 4.5
+  - -5.0
+  - 0.0
+wall_74:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - 2.5
+  - 0.0
+wall_75:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.5
+  - -5.0
+  - 0.0
+wall_76:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.0
+  - -1.5
+  - 0.0
+wall_77:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - 3.0
+  - 0.0
+wall_78:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - 0.5
+  - 0.0
+wall_79:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 4.5
+  - 0.0
+  - 0.0
+wall_8:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - -3.0
+  - 0.0
+wall_80:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - 4.5
+  - 0.0
+wall_81:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - 0.0
+  - 0.0
+wall_82:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 5.0
+  - 1.5
+  - 0.0
+wall_83:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 4.0
+  - -1.5
+  - 0.0
+wall_84:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -0.5
+  - 3.0
+  - 0.0
+wall_85:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 4.5
+  - 5.0
+  - 0.0
+wall_86:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.5
+  - 2.0
+  - 0.0
+wall_87:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 3.5
+  - -4.0
+  - 0.0
+wall_88:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -4.0
+  - -3.5
+  - 0.0
+wall_89:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.5
+  - 2.0
+  - 0.0
+wall_9:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -2.5
+  - 3.0
+  - 0.0
+wall_90:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.0
+  - 2.5
+  - 0.0
+wall_91:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.0
+  - -1.5
+  - 0.0
+wall_92:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -3.5
+  - 5.0
+  - 0.0
+wall_93:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 1.0
+  - -4.5
+  - 0.0
+wall_94:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.5
+  - 4.0
+  - 0.0
+wall_95:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.5
+  - 3.0
+  - 0.0
+wall_96:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -5.0
+  - -4.5
+  - 0.0
+wall_97:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 1.5707963267948966
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 0.0
+  - 0.5
+  - 0.0
+wall_98:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - 2.5
+  - -5.0
+  - 0.0
+wall_99:
+  model: wall/wall.urdf
+  rpy:
+  - 1.5707963267948966
+  - 0
+  - 0.0
+  scale: 0.01
+  use_fixed_base: true
+  xyz:
+  - -1.5
+  - 4.0
+  - 0.0

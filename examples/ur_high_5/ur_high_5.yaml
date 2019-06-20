@@ -1,83 +1,44 @@
-environment:
-    terminal_if_any: true
-    
-    max_episode_steps: 40
+terminal_if_any: true
 
-    plane:
-        model: plane.urdf
+reach_goal:
+    addon: reach_target
+    source_model: ur5_l
+    source_frame: ee_fixed_joint
+    target_model: ur5_r
+    target_frame: ee_fixed_joint
+    tolerance: 0.01
 
-        visual_randomizer:
-            addon: visual_randomizer
-            randomize_color: False
+ur5_l:
+    model: ur5/ur5_robot.urdf
+    xyz: [-0.55, 0.4, 0.0]
+    rpy: [0.0, 0.0, -1.57]
 
-    table:
-        model: table/table.urdf
-        xyz: [0.0, 0.4, 0.0]
+    controller:
+        addon: ik_controller
+        rest_position: [-0.17, -0.73, -1.93, -0.36, -0.03, -0.06]
+        end_effector: ee_fixed_joint
+        use_orientation: yes
 
-    tray:
-        model: tray/tray.urdf
-        xyz: [0.0, 0.0, 0.0]
+    joint_state:
+        addon: joint_state_sensor
 
-        visual_randomizer:
-            addon: visual_randomizer
-            randomize_color: False
+ur5_r:
+    model: ur5/ur5_robot.urdf
+    xyz: [0.55, 0.4, 0.0]
+    rpy: [0.0, 0.0, 1.57]
 
-    duck:
-        model: duck_vhacd.urdf
-        xyz: [0.0, 0.3, 0.61]
+    controller:
+        addon: ik_controller
+        rest_position: [-0.17, -0.73, -1.93, -0.36, -0.03, -0.06]
+        end_effector: ee_fixed_joint
+        use_orientation: yes
 
-        object_state_sensor:
-            addon: object_state_sensor
+    joint_state:
+        addon: joint_state_sensor
 
-    ur5_l:
-        model: ur5/ur5_2f.urdf
-        xyz: [-0.55, 0.4, 0.65]
-        rpy: [0.0, 0.0, -1.57]
-
-        2f_gripper_controller:
-            addon: 2f_gripper_controller
-            rest_position: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-            end_effector_frame: ee_fixed_joint
-
-        position_controller:
-            addon: position_controller
-            rest_position: [-0.07, -0.73, -1.93, -0.36, -0.03, -0.06]
-            end_effector_frame: ee_fixed_joint
-
-        slap:
-            addon: reach_target
-            target_position: [0.0, 0.4, 1.3]
-            frame: ee_fixed_joint
-
-        joint_state:
-            addon: joint_state_sensor
-
-    ur5_r:
-        model: ur5/ur5_3f.urdf
-        xyz: [0.55, 0.4, 0.65]
-        rpy: [0.0, 0.0, 1.57]
-
-        controller:
-            addon: position_controller
-            rest_position: [-0.07, -0.73, -1.93, -0.36, -0.03, -0.06]
-            end_effector_frame: ee_fixed_joint
-
-        3f_gripper_controller:
-          addon: 3f_gripper_controller
-          rest_position: [[0.0495, 0.0495, 0.0495], [0.0, 0.0, 0.0], [-0.64, -0.64, -0.64], [0.0, 0.0]]
-          end_effector_frame: ee_fixed_joint
-
-        visual_randomizer:
-            addon: visual_randomizer
-            randomize_color: False
-
-        dynamics_randomizer:
-            addon: dynamics_randomizer
-
-        slap:
-            addon: reach_target
-            target_position: [0.0, 0.4, 1.3]
-            frame: wrist_3_joint
-
-        joint_state:
-            addon: joint_state_sensor
+distance_to_target:
+    addon: object_state_sensor
+    source_model: ur5_l
+    source_frame: ee_fixed_joint
+    target_model: ur5_r
+    target_frame: ee_fixed_joint

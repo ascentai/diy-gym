@@ -1,18 +1,18 @@
-RoboGym
+DIYGym
 ========
 
-RoboGym is a framework for creating reinforcement learning environments using pybullet. It's designed to simplify the process of parameterising an environment, defining its observations, actions and reward signals and bottling all of that functionality up into an OpenAI style gym interface. It's especially useful replicating physical robot setups in simulation and randomising the parameters of that simulation for sim-to-real transfer.
+DIYGym is a framework for creating reinforcement learning environments using pybullet. It's designed to simplify the process of parameterising an environment, defining its observations, actions and reward signals and bottling all of that functionality up into an OpenAI style gym interface. It's especially useful replicating physical robot setups in simulation and randomising the parameters of that simulation for sim-to-real transfer.
 
 ## How it Works:
 
-RoboGym wraps pybullet up in a slightly higher level framework loosely inspired by Gazebo's SDFs and Plugins. In particular, it defines:
+DIYGym wraps pybullet up in a slightly higher level framework loosely inspired by Gazebo's SDFs and Plugins. In particular, it defines:
 
 * A config file which declares and parameterises all the objects to be spawned in the simulated environment
 * A set of add-ons which can be attached to an object to control, observe, derive reward from or just generally interact with that object during a simulation.
 
-Once configured, RoboGym presents itself as any other OpenAI-style gym environment. Create an environment like this:
+Once configured, DIYGym presents itself as any other OpenAI-style gym environment. Create an environment like this:
 ```python
-env = RoboGym(path_to_config_file)
+env = DIYGym(path_to_config_file)
 ```
 Check out it's action and observations spaces like so:
 ```python
@@ -35,34 +35,33 @@ while True:
 ```
 ### Config Files:
 
-To set up your environment you'll need to write own config file (or just adapt one of the [examples](https://github.com/ascentai/robo-gym/tree/master/examples)). Config files are yaml files that contain all the information RoboGym requires to describe an environment including what objects it should contain, how they should behave and how a learning agent can interact with them.
+To set up your environment you'll need to write own config file (or just adapt one of the [examples](https://github.com/ascentai/robo-gym/tree/master/examples)). Config files are yaml files that contain all the information DIYGym requires to describe an environment including what objects it should contain, how they should behave and how a learning agent can interact with them.
 
-The file itself contains one top level item called `environment` which in turns contains any number of `model`s. A model declares an object that will be spawned in the simulation environment. RoboGym identifies models in the config file as yaml dictionaries that contain an item with the key `model`; the value of which should be a file path to a URDF describing the geometry of the object to be spawned. Note that RoboGym will search for URDFs in the data folder of this package, the pybullet data folder or you can also just specify the absolute path directly in the config file. There are a few additional params that can be supplied to a model to describe its pose, scale etc (see `model.py` for more).
+The file itself contains any number of top level items called `model`s. A model declares an object that will be spawned in the simulation environment. DIYGym identifies models in the config file as yaml dictionaries that contain an item with the key `model`; the value of which should be a file path to a URDF describing the geometry of the object to be spawned. Note that DIYGym will search for URDFs in the data folder of this package, the pybullet data folder or you can also just specify the absolute path directly in the config file. There are a few additional params that can be supplied to a model to describe its pose, scale etc (see `model.py` for more).
 
 To see what this looks like, let's create an environment in which a Jaco robot arm sits on a table in front of a tiny R2D2 robot using the following config file:
 
 ```yaml
-environment:
-    plane:
-        model: plane.urdf
+plane:
+    model: plane.urdf
 
-    table:
-        model: table/table.urdf
-        xyz: [0.0, 0.4, 0.0]
+table:
+    model: table/table.urdf
+    xyz: [0.0, 0.4, 0.0]
 
-    r2d2:
-        model: r2d2.urdf
-        xyz: [0.1, 0.5, 0.7]
-        rpy: [0.0, 0.0, 3.1415]
-        scale: 0.1
+r2d2:
+    model: r2d2.urdf
+    xyz: [0.1, 0.5, 0.7]
+    rpy: [0.0, 0.0, 3.1415]
+    scale: 0.1
 
-    robot:
-        model: jaco/j2s7s300_standalone.urdf
-        xyz: [0.0, 0.0, 0.65]
+robot:
+    model: jaco/j2s7s300_standalone.urdf
+    xyz: [0.0, 0.0, 0.65]
 ```
-If we then instantiate a RoboGym passing in the config file above we'll be met with something that looks like the following:
+If we then instantiate a DIYGym passing in the config file above we'll be met with something that looks like the following:
 ```python
-useless_env = RoboGym(path_to_that_config_file)
+useless_env = DIYGym(path_to_that_config_file)
 ```
 ![limp_jaco](https://user-images.githubusercontent.com/38680667/51458000-f1c48980-1d96-11e9-8724-dc44ad730b00.png)
 
@@ -90,51 +89,50 @@ To actually interact with an environment we'll need to define some add-ons.
 
 ### Add-ons:
 
-An add-on is a chunk of code used to interact with the simulation whenever `step` or `reset` is called on a RoboGym instance; each add-on has the opportunity to retrieve information from the `action` dictionary passed to RoboGym's `step` method or to insert its information into the `observation`, `reward` or `is_terminal` dictionaries returned from `step`/`reset`.
+An add-on is a chunk of code used to interact with the simulation whenever `step` or `reset` is called on a DIYGym instance; each add-on has the opportunity to retrieve information from the `action` dictionary passed to DIYGym's `step` method or to insert its information into the `observation`, `reward` or `is_terminal` dictionaries returned from `step`/`reset`.
 
-Similar to models, add-ons are identified in the config file by RoboGym as being dictionaries containing an item with the key `addon`; the value of which should be a string referencing one of the addons that has been registered with RoboGym. Add-ons can be attached to either a model or the environment itself by adding their configs to the scope of the the desired parent in the config file.
+Similar to models, add-ons are identified in the config file by DIYGym as being dictionaries containing an item with the key `addon`; the value of which should be a string referencing one of the addons that has been registered with DIYGym. Add-ons can be attached to either a model or the environment itself by adding their configs to the scope of the the desired parent in the config file.
 
-RoboGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find the built-in set of add-ons are lacking, you can pretty easily add your own too (more on that below). 
+DIYGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find the built-in set of add-ons are lacking, you can pretty easily add your own too (more on that below). 
 
 To see how this all works, let's add a few add-ons to our Jaco environment to make it a little more functional. Specifically, we'll modify the environment such that an agent can learn to pick up the R2D2 with the Jaco arm while minimising the joint torque expended in doing so. The updated config file will look like this:
 ```yaml
-environment:
-    max_episode_steps: 50
+max_episode_steps: 50
 
-    plane:
-        model: plane.urdf
+plane:
+    model: plane.urdf
 
-    table:
-        model: table/table.urdf
-        xyz: [0.0, 0.4, 0.0]
+table:
+    model: table/table.urdf
+    xyz: [0.0, 0.4, 0.0]
 
-    r2d2:
-        model: r2d2.urdf
-        xyz: [0.1, 0.5, 0.7]
-        rpy: [0.0, 0.0, 3.1415]
-        scale: 0.1
+r2d2:
+    model: r2d2.urdf
+    xyz: [0.1, 0.5, 0.7]
+    rpy: [0.0, 0.0, 3.1415]
+    scale: 0.1
 
-        arm_camera:
-            addon: camera
-            frame: left_tip_joint
-            resolution: [200, 200]
+    arm_camera:
+        addon: camera
+        frame: left_tip_joint
+        resolution: [200, 200]
 
-    robot:
-        model: jaco/j2s7s300_standalone.urdf
-        xyz: [0.0, 0.0, 0.65]
+robot:
+    model: jaco/j2s7s300_standalone.urdf
+    xyz: [0.0, 0.0, 0.65]
 
-        controller:
-            addon: position_controller
-            rest_position: [0.0, 2.9, 0.0, 1.3, 4.2, 1.4, 0.0, 1.0, 1.0, 1.0]
-            end_effector_frame: j2s7s300_joint_end_effector
+    controller:
+        addon: position_controller
+        rest_position: [0.0, 2.9, 0.0, 1.3, 4.2, 1.4, 0.0, 1.0, 1.0, 1.0]
+        end_effector_frame: j2s7s300_joint_end_effector
 
-        grab_r2d2:
-            addon: reach_target
-            target_position: [0.1, 0.5, 0.7]
-            frame: j2s7s300_joint_end_effector
+    grab_r2d2:
+        addon: reach_target
+        target_position: [0.1, 0.5, 0.7]
+        frame: j2s7s300_joint_end_effector
 
-        lazy_robot:
-            addon: electricity_cost
+    lazy_robot:
+        addon: electricity_cost
 ```
 
 These additions will do the following:
@@ -143,9 +141,9 @@ These additions will do the following:
 * `grab_r2d2` will entice agents to pick up the R2D2 by calculating a penalty for the distance between it and the Jaco's end effector.
 * `lazy_robot` will calculate a penalty for the amount of joint torque currently being applied by the jaco and this penalty will be included in the reward value returned by `step`
 
-All this information is automatically reflected in RoboGym's action/observation spaces, as well as in the dictionaries it returns `step` and `reset`.
+All this information is automatically reflected in DIYGym's action/observation spaces, as well as in the dictionaries it returns `step` and `reset`.
 
-If we now instantiate a new RoboGym passing in this updated config file above we'll be met with something that looks like the following:
+If we now instantiate a new DIYGym passing in this updated config file above we'll be met with something that looks like the following:
 
 ![jaco_smash](https://user-images.githubusercontent.com/38680667/51458026-0dc82b00-1d97-11e9-9c1f-6d63f73ccaf2.gif)
 
@@ -189,9 +187,9 @@ terminal
 
 If you need to customise your environment beyond what's possible with the built-in addons it's pretty easy to add your own. To do so, just subclass `Addon` in addons/addon.py and follow the instructions in the docstrings to fill out your desired callbacks.
 
-Once you're satisfied with your addon you can register it with RoboGym using the `AddonFactory` class like so:
+Once you're satisfied with your addon you can register it with DIYGym using the `AddonFactory` class like so:
 ```python
-from robo_gym.addons.addon import Addon, AddonFactory
+from diy_gym.addons.addon import Addon, AddonFactory
 
 class MyAddon(Addon):
     ...
@@ -200,11 +198,11 @@ AddonFactory.register_addon('my_addon', MyAddon)
 ```
 This will add your addon to a dictionary maintained by the factory so choose a name that doesn't clash with any of built-in addons or any others that you've defined.
 
-Once the addon is added you can refer to it in a config file just as you would any other addon and use that file to create a RoboGym:
+Once the addon is added you can refer to it in a config file just as you would any other addon and use that file to create a DIYGym:
 ```python
-env = RoboGym(path_to_config_file)
+env = DIYGym(path_to_config_file)
 ```
-For an actual example of how to add a addon to RoboGym, check out the [jaco_on_a_table](https://github.com/ascentai/robo-gym/tree/master/examples/jaco_on_a_table) example.
+For an actual example of how to add a addon to DIYGym, check out the [jaco_on_a_table](https://github.com/ascentai/robo-gym/tree/master/examples/jaco_on_a_table) example.
 
 ## Installation:
 
@@ -213,7 +211,7 @@ It's best to work out of a conda environment. If you haven't already, download a
 conda create --name robo-gym python=3.5
 source activate robo-gym
 ```
-Now navigate to wherever you cloned RoboGym and install its requirements followed by the RoboGym itself:
+Now navigate to wherever you cloned DIYGym and install its requirements followed by the DIYGym itself:
 ```
 cd $PATH_TO_ROBOGYM
 pip install -r requirements.txt

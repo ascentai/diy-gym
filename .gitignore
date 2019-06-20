@@ -1,4 +1,4 @@
-robo_gym.egg-info
+diy_gym.egg-info
 .vscode/*
 *__pycache__*
-robo_gym/data/textures
+diy_gym/data/textures
