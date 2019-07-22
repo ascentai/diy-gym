@@ -17,4 +17,5 @@ class StuckJointCost(Addon):
         upper_limit = np.array([info[9] for info in joint_info])
 
     def reward(self):
-        return -self.multiplier if np.any(np.min(np.abs(lower_limit-position), np.abs(upper_limit-position)) > 0.01) else 0.0
+        return -self.multiplier if np.any(
+            np.min(np.abs(lower_limit - position), np.abs(upper_limit - position)) > 0.01) else 0.0

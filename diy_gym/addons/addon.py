@@ -1,6 +1,7 @@
 from gym import spaces
 from collections import OrderedDict
 
+
 class AddonFactory:
     """AddonFactory is a singeleton factory class (fancy!) for creating addons from the config file based on a string name.
 
@@ -78,8 +79,12 @@ class AddonFactory:
         AddonFactory.get().addons[name] = cls
 
 
-class _Ignore(object): pass
+class _Ignore(object):
+    pass
+
+
 _ignore = _Ignore()
+
 
 class Addon:
     """Addons are the workhorses of the environment, they can be attached to a Model or the environment itself and are expected to
@@ -118,7 +123,7 @@ class Addon:
             pybullet.stepSimulation() will be executed immediately after all the addons have updated themselves so don't expect the environment
             to update straight away. Also, probably don't call stepSimulation from your addon, it'll screw up the other addons
         """
-        pass #return _ignore
+        pass  #return _ignore
 
     def reset(self):
         """reset is executed whenever reset() is called on the environment. Addons implementing this function are expected to reset
@@ -132,7 +137,7 @@ class Addon:
             It's up to the client to call reset at their convenience. Even if a addon reports is_terminal, it's not guranteed that this
             will be followed by an immediate reset().
         """
-        pass #return _ignore
+        pass  #return _ignore
 
     def observe(self):
         """observe is executed at the end of calls to either step() or reset() on the environment. Addons are expected to gather up sensor readings
@@ -146,7 +151,7 @@ class Addon:
             Again, there's no code that checks to make sure that it does conform, but it's a pain when observations
             don't match the declared space, so don't be a jerk.
         """
-        pass #return _ignore
+        pass  #return _ignore
 
     def reward(self):
         """reward is executed at the end of calls to step() on the environment. Addons implementing this function should use some state information from
@@ -161,7 +166,7 @@ class Addon:
 
             A single environment can have any number of addons that produce rewards, the environment will collate them all up into a dict and return them from step()
         """
-        pass #return _ignore
+        pass  #return _ignore
 
     def is_terminal(self):
         """is_terminal is executed at the end of calls to step() on the environment. Addons implementing this function should use some state information from
@@ -176,7 +181,7 @@ class Addon:
 
             A single environment can have any number of addons that produce is_terminal, the environment will collate them all up into a dict and return them from step()
         """
-        pass #return _ignore
+        pass  #return _ignore
 
 
 class Receptor:

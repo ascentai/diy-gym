@@ -32,7 +32,8 @@ class Propellor(Addon):
         """Call the pybullet function to apply the desired force to this model.
         """
         self.rotor_speed = self.rotor_speed + (action - self.rotor_speed) * self.spool_up_rate
-        p.applyExternalForce(self.uid, self.frame_id, [0, 0, self.max_thrust * self.rotor_speed], [0, 0, 0], p.LINK_FRAME)
+        p.applyExternalForce(self.uid, self.frame_id, [0, 0, self.max_thrust * self.rotor_speed], [0, 0, 0],
+                             p.LINK_FRAME)
         p.applyExternalTorque(self.uid, self.frame_id, [0, 0, self.max_torque * self.rotor_speed], p.LINK_FRAME)
 
     def observe(self):
@@ -84,7 +85,8 @@ if __name__ == '__main__':
     # roll_torque =         - motor2          + motor4
     # pitch_torque = motor1          - motor3
     # yaw_torque =   motor1 - motor2 + motor3 - motor4
-    thrust_torque_to_motor_speeds = np.linalg.inv(np.array([[1, 1, 1, 1], [0, -1, 0, 1], [1, 0, -1, 0], [1, -1, 1, -1]]))
+    thrust_torque_to_motor_speeds = np.linalg.inv(np.array([[1, 1, 1, 1], [0, -1, 0, 1], [1, 0, -1, 0], [1, -1, 1,
+                                                                                                         -1]]))
 
     while True:
 
@@ -94,10 +96,10 @@ if __name__ == '__main__':
 
         # get the position of the target wrt the drone
         position_error, _ = p.multiplyTransforms(
-            *p.invertTransform(observation['drone']['pose']['position'], p.getQuaternionFromEuler(observation['drone']['pose']['orientation'])),
+            *p.invertTransform(observation['drone']['pose']['position'],
+                               p.getQuaternionFromEuler(observation['drone']['pose']['rotation'])),
             observation['target']['pose']['position'],
-            p.getQuaternionFromEuler(observation['target']['pose']['orientation'])
-        )
+            p.getQuaternionFromEuler(observation['target']['pose']['rotation']))
 
         # Position control: calculate a bank angle so as to move the drone to the target
         roll = position_error[1] * position_P_gain
@@ -106,10 +108,12 @@ if __name__ == '__main__':
 
         # Altitude control: calculate thrust necessary to achieve desired altitude
         altitude_error_integral += position_error[2]
-        thrust = position_error[2] * altitude_P_gain + altitude_error_integral * altitude_I_gain - observation['drone']['pose']['velocity'][2] * altitude_D_gain
+        thrust = position_error[2] * altitude_P_gain + altitude_error_integral * altitude_I_gain - observation['drone'][
+            'pose']['velocity'][2] * altitude_D_gain
 
         # Attitude control: calculate torques necessary to achieve desired attitude
-        torques = -quaternion_multiply(q_ref, p.getQuaternionFromEuler(observation['drone']['pose']['orientation']))[:3] * attitude_P_gain
+        torques = -quaternion_multiply(q_ref, p.getQuaternionFromEuler(
+            observation['drone']['pose']['rotation']))[:3] * attitude_P_gain
 
         if observation['drone']['pose']['position'][2] < 2.0:
             torques[:] = 0

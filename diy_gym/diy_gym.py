@@ -50,7 +50,7 @@ class DIYGym(gym.Env, Receptor):
 
         p.resetSimulation()
 
-        timestep = config.get('timestep', 1/240.)
+        timestep = config.get('timestep', 1 / 240.)
         sub_steps = int(1. / config.get('update_freq', 100) / timestep)
         iterations = config.get('solver_iterations', 150)
         p.setPhysicsEngineParameter(numSolverIterations=iterations, numSubSteps=sub_steps, fixedTimeStep=timestep)
@@ -58,12 +58,19 @@ class DIYGym(gym.Env, Receptor):
         gravity = config.get('gravity', [0.0, 0.0, -9.81])
         p.setGravity(gravity[0], gravity[1], gravity[2])
 
-        self.models = OrderedDict(sorted({child.name: Model(child) for child in config.find_all('model')}.items(), key=lambda t: t[0]))
-        self.addons = OrderedDict(sorted({child.name: AddonFactory.build(child.get('addon'), self, child) for child in config.find_all('addon')}.items(), key=lambda t: t[0]))
+        self.models = OrderedDict(
+            sorted({child.name: Model(child)
+                    for child in config.find_all('model')}.items(), key=lambda t: t[0]))
+        self.addons = OrderedDict(
+            sorted(
+                {child.name: AddonFactory.build(child.get('addon'), self, child)
+                 for child in config.find_all('addon')}.items(),
+                key=lambda t: t[0]))
         self.receptors = OrderedDict(sorted({**self.models, self.name: self}.items(), key=lambda t: t[0]))
 
         self.collapse_rewards_func = sum if config.get('sum_rewards', False) else None
-        self.collapse_terminals_func = any if config.get('terminal_if_any', False) else all if config.get('terminal_if_all', False) else None
+        self.collapse_terminals_func = any if config.get(
+            'terminal_if_any', False) else all if config.get('terminal_if_all', False) else None
         self.flatten_observations = config.get('flatten_observations', False)
         self.flatten_actions = config.get('flatten_actions', False)
 
@@ -144,7 +151,7 @@ class DIYGym(gym.Env, Receptor):
             dict: A dictionary containing a set of terminals collected from each addon OR the logical sum of those terminals
             if either the terminal_if_any or terminal_if_all configs are enabled
         """
-        """ CXXAAHT """ # Ayana's first docstring
+        """ CXXAAHT """  # Ayana's first docstring
         ret = self.walk_addons(lambda addon: addon.is_terminal())
 
         if self._max_episode_steps is not None:

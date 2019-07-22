@@ -20,7 +20,10 @@ class VisualRandomizer(Addon):
 
         self.uid = parent.uid
 
-        self.joint_ids = [p.getJointInfo(self.uid, i)[0] for i in range(p.getNumJoints(self.uid)) if p.getJointInfo(self.uid, i)[3] > -1]
+        self.joint_ids = [
+            p.getJointInfo(self.uid, i)[0] for i in range(p.getNumJoints(self.uid))
+            if p.getJointInfo(self.uid, i)[3] > -1
+        ]
         self.joint_ids = [-1] if not self.joint_ids else self.joint_ids
 
         self.data_dir = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '/../../data')
@@ -44,7 +47,8 @@ class VisualRandomizer(Addon):
 
     def get_dataset(self):
         print('diy_gym/data/textures folder not found, downloading dataset...')
-        self.download_dataset('https://www.robots.ox.ac.uk/~vgg/data/dtd/download/dtd-r1.0.1.tar.gz', self.data_dir + '/textures.tar.gz')
+        self.download_dataset('https://www.robots.ox.ac.uk/~vgg/data/dtd/download/dtd-r1.0.1.tar.gz',
+                              self.data_dir + '/textures.tar.gz')
 
         print('\nDownload complete, extracting dataset...')
         tf = tarfile.open(self.data_dir + '/textures.tar.gz')
@@ -67,7 +71,7 @@ class VisualRandomizer(Addon):
         """
         r = requests.get(url, stream=True)
         with open(filename, 'wb') as f:
-            for chunk in tqdm(r.iter_content(chunk_size=1024), unit="B", total=int(r.headers['Content-Length'])/1024):
+            for chunk in tqdm(r.iter_content(chunk_size=1024), unit="B", total=int(r.headers['Content-Length']) / 1024):
                 if chunk:  # filter out keep-alive new chunks
                     f.write(chunk)
         return filename

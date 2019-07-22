@@ -23,14 +23,15 @@ class DrawCoords(Addon):
         elif 'frames' in config:
             frames = config.get('frames')
         else:
-            frames = [p.getJointInfo(self.parent.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.parent.uid))] + ['base']
+            frames = [
+                p.getJointInfo(self.parent.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.parent.uid))
+            ] + ['base']
 
         self.markers = {
             frame: [
                 -1 if frame == 'base' else self.parent.get_frame_id(frame),
                 [p.addUserDebugLine([0, 0, 0], vec, vec) for vec in np.eye(3)],
-                p.addUserDebugText(frame, [0, 0, 0])
-                if self.annotate else None
+                p.addUserDebugText(frame, [0, 0, 0]) if self.annotate else None
             ]
             for frame in frames
         }
@@ -43,21 +44,17 @@ class DrawCoords(Addon):
             T_net = self.T_offset.dot(T_world_parent)
 
             self.markers[frame][1] = [
-                p.addUserDebugLine(
-                    T_world_parent[:3, 3],
-                    T_world_parent[:3, 3] + T_world_parent[:3, :3].dot(vec) * self.scale,
-                    vec,
-                    lineWidth=2,
-                    replaceItemUniqueId=line
-                ) for vec, line in zip(np.eye(3), self.markers[frame][1])
+                p.addUserDebugLine(T_world_parent[:3, 3],
+                                   T_world_parent[:3, 3] + T_world_parent[:3, :3].dot(vec) * self.scale,
+                                   vec,
+                                   lineWidth=2,
+                                   replaceItemUniqueId=line) for vec, line in zip(np.eye(3), self.markers[frame][1])
             ]
 
             if self.annotate:
-                self.markers[frame][2] = p.addUserDebugText(
-                    frame,
-                    T_net[:3, 3],
-                    replaceItemUniqueId=self.markers[frame][2]
-                )
+                self.markers[frame][2] = p.addUserDebugText(frame,
+                                                            T_net[:3, 3],
+                                                            replaceItemUniqueId=self.markers[frame][2])
 
     def trans_from_xyz_quat(self, xyz, quat):
         T = np.eye(4)
