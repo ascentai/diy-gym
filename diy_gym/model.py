@@ -32,7 +32,7 @@ class Model(Receptor):
         if parent is None:
             p.resetBasePositionAndOrientation(self.uid, self.position, self.orientation)
         else:
-            parent_frame_id = self.get_frame_id(config.get('parent_frame')) if 'parent_frame' in config else -1
+            parent_frame_id = parent.get_frame_id(config.get('parent_frame')) if 'parent_frame' in config else -1
             child_frame_id = self.get_frame_id(config.get('child_frame')) if 'child_frame' in config else -1
 
             pose = p.getLinkState(parent.uid,
