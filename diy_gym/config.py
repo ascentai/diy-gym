@@ -1,8 +1,12 @@
 import yaml
 import os
 
+
 # class and singleton to distinguish whether or not user has passed us a default value
-class _Unspecified(object): pass
+class _Unspecified(object):
+    pass
+
+
 _unspecified = _Unspecified()
 
 

@@ -4,7 +4,6 @@ from diy_gym.config import Configuration
 
 
 class TestConfiguration(unittest.TestCase):
-
     def setUp(self):
         config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'basic_env.yaml')
         self.config = Configuration.from_file(config_file)

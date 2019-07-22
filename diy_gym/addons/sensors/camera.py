@@ -17,8 +17,8 @@ class Camera(Addon):
         self.uid = parent.uid if isinstance(parent, Model) else -1
         self.frame_id = parent.get_frame_id(config.get('frame')) if 'frame' in config else -1
 
-        xyz = config.get('xyz', [0.,0.,0.])
-        rpy = config.get('rpy', [0.,0.,0.])
+        xyz = config.get('xyz', [0., 0., 0.])
+        rpy = config.get('rpy', [0., 0., 0.])
 
         self.use_depth = config.get('use_depth', True)
         self.use_seg_mask = config.get('use_segmentation_mask', False)
@@ -27,13 +27,16 @@ class Camera(Addon):
         self.projection_matrix = p.computeProjectionMatrixFOV(self.fov, self.aspect, self.near, self.far)
         self.K = np.array(self.projection_matrix).reshape([4, 4]).T
 
-        self.observation_space = spaces.Dict({'rgb': spaces.Box(0., 1., shape=self.resolution+[3], dtype='float32'),})
+        self.observation_space = spaces.Dict({
+            'rgb': spaces.Box(0., 1., shape=self.resolution + [3], dtype='float32'),
+        })
 
         if self.use_depth:
             self.observation_space.spaces.update({'depth': spaces.Box(0., 10., shape=self.resolution, dtype='float32')})
 
         if self.use_seg_mask:
-            self.observation_space.spaces.update({'segmentation_mask': spaces.Box(0., 10., shape=self.resolution, dtype='float32')})
+            self.observation_space.spaces.update(
+                {'segmentation_mask': spaces.Box(0., 10., shape=self.resolution, dtype='float32')})
 
     def observe(self):
         if self.frame_id >= 0:
@@ -47,16 +50,22 @@ class Camera(Addon):
 
         T_world_cam = np.linalg.inv(T_world_parent.dot(self.T_parent_cam))
 
-        image = p.getCameraImage(self.resolution[0], self.resolution[1], T_world_cam.T.flatten(), self.projection_matrix, flags=p.ER_NO_SEGMENTATION_MASK if not self.use_seg_mask else 0)
+        image = p.getCameraImage(self.resolution[0],
+                                 self.resolution[1],
+                                 T_world_cam.T.flatten(),
+                                 self.projection_matrix,
+                                 flags=p.ER_NO_SEGMENTATION_MASK if not self.use_seg_mask else 0)
 
-        obs = {'rgb': np.array(image[2], copy=False).reshape(self.resolution+[4])[:, :, :3] / 255.} # discard the alpha channel and normalise to [0 1]
+        obs = {
+            'rgb': np.array(image[2], copy=False).reshape(self.resolution + [4])[:, :, :3] / 255.
+        }  # discard the alpha channel and normalise to [0 1]
 
         if self.use_depth:
             # the depth buffer is normalised to [0 1] whereas NDC coords require [-1 1] ref: https://bit.ly/2rcXidZ
             depth_ndc = np.array(image[3], copy=False).reshape(self.resolution) * 2 - 1
 
             # recover eye coordinate depth using the projection matrix ref: https://bit.ly/2vZJCsx
-            depth = self.K[2,3] / (self.K[3,2] * depth_ndc - self.K[2,2])
+            depth = self.K[2, 3] / (self.K[3, 2] * depth_ndc - self.K[2, 2])
 
             obs['depth'] = depth
 
@@ -67,6 +76,6 @@ class Camera(Addon):
 
     def trans_from_xyz_quat(self, xyz, quat):
         T = np.eye(4)
-        T[:3,3] = xyz
-        T[:3,:3] = np.array(p.getMatrixFromQuaternion(quat)).reshape(3,3)
+        T[:3, 3] = xyz
+        T[:3, :3] = np.array(p.getMatrixFromQuaternion(quat)).reshape(3, 3)
         return T

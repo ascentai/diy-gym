@@ -26,4 +26,5 @@ class Respawn(Addon):
         p.resetBasePositionAndOrientation(self.uid, *self.pose)
 
     def generate_pose(self):
-        return ((np.random.random(3) - 0.5) * self.position_range + self.origin, p.getQuaternionFromEuler((np.random.random(3) - 0.5) * self.rotation_range))
+        return ((np.random.random(3) - 0.5) * self.position_range + self.origin,
+                p.getQuaternionFromEuler((np.random.random(3) - 0.5) * self.rotation_range))

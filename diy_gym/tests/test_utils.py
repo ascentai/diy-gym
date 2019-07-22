@@ -4,8 +4,8 @@ import numpy as np
 from diy_gym import DIYGym
 from diy_gym.utils import flatten, unflatten
 
-class TestEnvironment(unittest.TestCase):
 
+class TestEnvironment(unittest.TestCase):
     def setUp(self):
         config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'basic_env.yaml')
         self.env = DIYGym(config_file)

@@ -10,4 +10,3 @@ class TimePenalty(Addon):
 
     def reward(self):
         return self.penalty
-

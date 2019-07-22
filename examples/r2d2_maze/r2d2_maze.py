@@ -14,10 +14,11 @@ if __name__ == '__main__':
     speed = 10.
 
     key_and_delta = {
-        p.B3G_LEFT_ARROW:  [-1,-1, 1, 1],
-        p.B3G_RIGHT_ARROW: [ 1, 1,-1,-1],
-        p.B3G_UP_ARROW:    [-1,-1,-1,-1],
-        p.B3G_DOWN_ARROW:  [ 1, 1, 1, 1]}
+        p.B3G_LEFT_ARROW: [-1, -1, 1, 1],
+        p.B3G_RIGHT_ARROW: [1, 1, -1, -1],
+        p.B3G_UP_ARROW: [-1, -1, -1, -1],
+        p.B3G_DOWN_ARROW: [1, 1, 1, 1]
+    }
 
     action = env.action_space.sample()
 
@@ -31,6 +32,6 @@ if __name__ == '__main__':
 
         for key, delta in key_and_delta.items():
             if key in keys and keys[key] & p.KEY_IS_DOWN:
-                action['r2d2']['wheel_driver'] += np.array(delta) * speed 
+                action['r2d2']['wheel_driver'] += np.array(delta) * speed
 
         observation, reward, terminal, info = env.step(action)

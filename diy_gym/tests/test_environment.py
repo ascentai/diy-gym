@@ -5,7 +5,6 @@ from diy_gym import DIYGym
 
 
 class TestEnvironment(unittest.TestCase):
-
     def setUp(self):
         config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'basic_env.yaml')
         self.env = DIYGym(config_file)
@@ -27,7 +26,7 @@ class TestEnvironment(unittest.TestCase):
 
         # try to run the blue marble into the other two
         for _ in range(500):
-            observation, _, _, _ = self.env.step({'blue_marble': {'force': [0,-100,0]}})
+            observation, _, _, _ = self.env.step({'blue_marble': {'force': [0, -100, 0]}})
 
         final_position = observation['green_marble']['pose']['position']
 

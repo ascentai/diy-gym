@@ -3,6 +3,7 @@ import numpy as np
 from diy_gym.addons.addon import Addon
 import pybullet as p
 
+
 class ElectricityCost(Addon):
     def __init__(self, parent, config):
         super(ElectricityCost, self).__init__(parent, config)
