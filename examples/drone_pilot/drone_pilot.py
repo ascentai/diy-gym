@@ -94,9 +94,9 @@ if __name__ == '__main__':
 
         # get the position of the target wrt the drone
         position_error, _ = p.multiplyTransforms(
-            *p.invertTransform(observation['drone']['pose']['position'], p.getQuaternionFromEuler(observation['drone']['pose']['orientation'])),
+            *p.invertTransform(observation['drone']['pose']['position'], p.getQuaternionFromEuler(observation['drone']['pose']['rotation'])),
             observation['target']['pose']['position'],
-            p.getQuaternionFromEuler(observation['target']['pose']['orientation'])
+            p.getQuaternionFromEuler(observation['target']['pose']['rotation'])
         )
 
         # Position control: calculate a bank angle so as to move the drone to the target
@@ -109,7 +109,7 @@ if __name__ == '__main__':
         thrust = position_error[2] * altitude_P_gain + altitude_error_integral * altitude_I_gain - observation['drone']['pose']['velocity'][2] * altitude_D_gain
 
         # Attitude control: calculate torques necessary to achieve desired attitude
-        torques = -quaternion_multiply(q_ref, p.getQuaternionFromEuler(observation['drone']['pose']['orientation']))[:3] * attitude_P_gain
+        torques = -quaternion_multiply(q_ref, p.getQuaternionFromEuler(observation['drone']['pose']['rotation']))[:3] * attitude_P_gain
 
         if observation['drone']['pose']['position'][2] < 2.0:
             torques[:] = 0

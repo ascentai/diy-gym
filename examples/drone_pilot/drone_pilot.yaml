@@ -14,6 +14,7 @@ target:
 
     pose:
         addon: object_state_sensor
+        include_rotation: yes
 
     respawn:
         addon: respawn
@@ -27,6 +28,8 @@ drone:
 
     pose:
         addon: object_state_sensor
+        include_rotation: yes
+        include_velocity: yes
     
     respawn:
         addon: respawn

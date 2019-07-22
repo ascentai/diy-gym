@@ -3,10 +3,9 @@ from setuptools import setup
 setup(
     name='diy_gym',
     version='0.1',
-    description='A flexible simulation environment for robot arms to drive RL research @ Ascent',
+    description='A framework for building your own reinforcement learning environments',
     url='http://github.com/ascentai/diy_gym',
     author='AscentAI',
-    author_email='dev@ascent.ai',
     license='MIT',
     classifiers=[
         'License :: OSI Approved :: MIT License',
