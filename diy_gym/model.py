@@ -32,11 +32,8 @@ class Model(Receptor):
         if parent is None:
             p.resetBasePositionAndOrientation(self.uid, self.position, self.orientation)
         else:
-            parent_frame_id = [
-                p.getJointInfo(parent.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))
-            ].index(config.get('parent_frame')) if 'parent_frame' in config else -1
-            child_frame_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))
-                              ].index(config.get('child_frame')) if 'child_frame' in config else -1
+            parent_frame_id = self.get_frame_id(config.get('parent_frame')) if 'parent_frame' in config else -1
+            child_frame_id = self.get_frame_id(config.get('child_frame')) if 'child_frame' in config else -1
 
             pose = p.getLinkState(parent.uid,
                                   parent_frame_id)[:2] if parent_frame_id != -1 else p.getBasePositionAndOrientation(
