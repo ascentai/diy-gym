@@ -6,6 +6,7 @@ setup(
     description='A framework for building your own reinforcement learning environments',
     url='http://github.com/ascentai/diy_gym',
     author='AscentAI',
+    author_email='opensource@ascent.ai',
     license='MIT',
     classifiers=[
         'License :: OSI Approved :: MIT License',

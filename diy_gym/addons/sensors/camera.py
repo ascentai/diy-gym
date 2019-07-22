@@ -15,7 +15,7 @@ class Camera(Addon):
         self.aspect = self.resolution[0] / self.resolution[1]
 
         self.uid = parent.uid if isinstance(parent, Model) else -1
-        self.frame_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))].index(config.get('frame')) if 'frame' in config else -1
+        self.frame_id = parent.get_frame_id(config.get('frame')) if 'frame' in config else -1
 
         xyz = config.get('xyz', [0.,0.,0.])
         rpy = config.get('rpy', [0.,0.,0.])
@@ -49,11 +49,11 @@ class Camera(Addon):
 
         image = p.getCameraImage(self.resolution[0], self.resolution[1], T_world_cam.T.flatten(), self.projection_matrix, flags=p.ER_NO_SEGMENTATION_MASK if not self.use_seg_mask else 0)
 
-        obs = {'rgb': image[2][:, :, :3] / 255.} # discard the alpha channel and normalise to [0 1]
+        obs = {'rgb': np.array(image[2], copy=False).reshape(self.resolution+[4])[:, :, :3] / 255.} # discard the alpha channel and normalise to [0 1]
 
         if self.use_depth:
             # the depth buffer is normalised to [0 1] whereas NDC coords require [-1 1] ref: https://bit.ly/2rcXidZ
-            depth_ndc = image[3] * 2 - 1
+            depth_ndc = np.array(image[3], copy=False).reshape(self.resolution) * 2 - 1
 
             # recover eye coordinate depth using the projection matrix ref: https://bit.ly/2vZJCsx
             depth = self.K[2,3] / (self.K[3,2] * depth_ndc - self.K[2,2])
@@ -61,7 +61,7 @@ class Camera(Addon):
             obs['depth'] = depth
 
         if self.use_seg_mask:
-            obs['segmentation_mask'] = image[4]
+            obs['segmentation_mask'] = np.array(image[4], copy=False).reshape(self.resolution)
 
         return obs
 

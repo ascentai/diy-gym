@@ -11,6 +11,9 @@ class InverseKinematicsController(Addon):
 
         self.uid = parent.uid
 
+        self.position_gain = config.get('position_gain', 0.015)
+        self.velocity_gain = config.get('velocity_gain', 1.0)
+
         joint_info = [p.getJointInfo(self.uid, i) for i in range(p.getNumJoints(self.uid))]
         self.end_effector_joint_id = [info[1].decode('UTF-8') for info in joint_info].index(config.get('end_effector'))
         joints = [info[1].decode('UTF-8') for info in joint_info if info[0] <= self.end_effector_joint_id]
@@ -33,8 +36,6 @@ class InverseKinematicsController(Addon):
     def reset(self):
         for joint_id, angle in zip(self.joint_ids, self.rest_position):
             p.resetJointState(self.uid, joint_id, angle)
-
-        # self.target_state = [np.array(s) for s in p.getLinkState(self.uid, self.end_effector_joint_id)]
 
     def update(self, action):
         self.target_state = [np.array(s) for s in p.getLinkState(self.uid, self.end_effector_joint_id)]
@@ -64,8 +65,8 @@ class InverseKinematicsController(Addon):
             targetPositions=joint_cmds,
             targetVelocities=[0.0] * len(joint_cmds),
             forces=self.torque_limit,
-            positionGains=[0.015] * len(joint_cmds),
-            velocityGains=[1.0] * len(joint_cmds),
+            positionGains=[self.position_gain] * len(joint_cmds),
+            velocityGains=[self.velocity_gain] * len(joint_cmds),
         )
 
     def quaternion_multiply(self, q1, q0):

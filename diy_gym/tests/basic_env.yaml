@@ -1,0 +1,48 @@
+render: no
+im_a_config: yes
+
+camera:
+    addon: camera
+    xyz: [0,0,3]
+    rpy: [0,0,-1.57]
+    resolution: [50,50]
+
+plane:
+    model: 'grass/plane.urdf'
+    xyz: [0,0,0]
+
+red_marble:
+    model: sphere2.urdf
+    xyz: [-0.5,-1.0,0.5]
+    color: [1,0,0,1]
+
+    force:
+        addon: external_force
+        xyz: [0,0,0.5]
+
+    respawn:
+        addon: respawn
+
+green_marble:
+    model: sphere2.urdf
+    xyz: [0.5,-1.0,0.5]
+    color: [0,1,0,1]
+
+    pose:
+        addon: object_state_sensor
+
+    respawn:
+        addon: respawn
+
+
+blue_marble:
+    model: sphere2.urdf
+    xyz: [0,1.0,0.5]
+    color: [0,0,1,1]
+
+    force:
+        addon: external_force
+        xyz: [0,0,0.5]
+
+    respawn:
+        addon: respawn

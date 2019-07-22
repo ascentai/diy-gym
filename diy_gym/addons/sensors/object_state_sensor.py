@@ -40,8 +40,8 @@ class ObjectStateSensor(Addon):
             state = p.getLinkState(uid, frame_id, computeLinkVelocity=1)
             position = state[0]
             rotation = state[1]
-            velocity = state[-2]
-            angular_velocity = state[-1]
+            velocity = state[6]
+            angular_velocity = state[7]
 
         return list(np.array(obj) for obj in [position, velocity, rotation, angular_velocity])
 

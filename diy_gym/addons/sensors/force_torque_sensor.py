@@ -10,7 +10,7 @@ class ForceTorqueSensor(Addon):
         super(ObjectStateSensor, self).__init__(parent, config)
 
         self.uid = parent.uid
-        self.frame_id = [p.getJointInfo(self.uid, i)[1].decode('utf-8') for i in range(p.getNumJoints(self.uid))].index(config.get('frame')) if 'frame' in config else -1
+        self.frame_id = parent.get_frame_id(config.get('frame')) if 'frame' in config else -1
 
         p.enableJointForceTorqueSensor(self.uid, self.frame_id, enableSensor=True)
 
