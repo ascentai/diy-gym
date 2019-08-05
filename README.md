@@ -4,9 +4,9 @@ DIYGym
 DIYGym is a framework for creating reinforcement learning environments using pybullet. It's designed to simplify the process of parameterising an environment, defining its observations, actions and reward signals and bottling all of that functionality up into an OpenAI style gym interface. It's especially useful replicating physical robot setups in simulation and randomising the parameters of that simulation for sim-to-real transfer.
 
 <p float="left">
-  <img src="https://user-images.githubusercontent.com/38680667/62431930-11d1fe00-b767-11e9-923d-a1001174cb63.gif" height="217" />
-  <img src="https://user-images.githubusercontent.com/38680667/62431933-126a9480-b767-11e9-86ec-2d7080cdb144.gif" height="217" />
-  <img src="https://user-images.githubusercontent.com/38680667/62431931-126a9480-b767-11e9-9c51-1a4267c9d875.gif" height="217" /> 
+  <img src="https://user-images.githubusercontent.com/38680667/62431930-11d1fe00-b767-11e9-923d-a1001174cb63.gif" height="210" />
+  <img src="https://user-images.githubusercontent.com/38680667/62431933-126a9480-b767-11e9-86ec-2d7080cdb144.gif" height="210" />
+  <img src="https://user-images.githubusercontent.com/38680667/62431931-126a9480-b767-11e9-9c51-1a4267c9d875.gif" height="210" /> 
 </p>
 
 ## How it Works:
