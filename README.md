@@ -3,6 +3,12 @@ DIYGym
 
 DIYGym is a framework for creating reinforcement learning environments using pybullet. It's designed to simplify the process of parameterising an environment, defining its observations, actions and reward signals and bottling all of that functionality up into an OpenAI style gym interface. It's especially useful replicating physical robot setups in simulation and randomising the parameters of that simulation for sim-to-real transfer.
 
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/38680667/62431930-11d1fe00-b767-11e9-923d-a1001174cb63.gif" height="217" />
+  <img src="https://user-images.githubusercontent.com/38680667/62431933-126a9480-b767-11e9-86ec-2d7080cdb144.gif" height="217" />
+  <img src="https://user-images.githubusercontent.com/38680667/62431931-126a9480-b767-11e9-9c51-1a4267c9d875.gif" height="217" /> 
+</p>
+
 ## How it Works:
 
 DIYGym wraps pybullet up in a slightly higher level framework loosely inspired by Gazebo's SDFs and Plugins. In particular, it defines:
@@ -166,7 +172,7 @@ observation
         |---depth <class 'numpy.ndarray'>
         |---rgb <class 'numpy.ndarray'>
 ```
-`reward` and `terminal` are also represented by dictionaries which is a slight departure from the usual gym interface. If you'd rather all their fields be combined you can set the config `sum_rewards`, `terminal_if_any` or `terminal_if_all` to true in the environment node of the config file (see [examples/ur_high_5](https://github.com/ascentai/robo-gym/tree/master/examples/ur_high_5) for an example).
+`reward` and `terminal` are also represented by dictionaries which is a slight departure from the usual gym interface. If you'd rather all their fields be combined you can set the config `sum_rewards`, `terminal_if_any` or `terminal_if_all` to true in the top level of the config file (see [examples/ur_high_5](https://github.com/ascentai/robo-gym/tree/master/examples/ur_high_5) for an example).
 
 ```
 reward
@@ -202,7 +208,7 @@ Once the addon is added you can refer to it in a config file just as you would a
 ```python
 env = DIYGym(path_to_config_file)
 ```
-For an actual example of how to add a addon to DIYGym, check out the [jaco_on_a_table](https://github.com/ascentai/robo-gym/tree/master/examples/jaco_on_a_table) example.
+For an actual example of how to add a addon to DIYGym, check out the [drone_pilot](https://github.com/ascentai/diy-gym/tree/master/examples/drone_pilot) example.
 
 ## Installation:
 
