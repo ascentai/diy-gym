@@ -6,7 +6,7 @@ from diy_gym.addons.addon import Addon
 
 class ForceTorqueSensor(Addon):
     def __init__(self, parent, config, link_name=None, force_enabled=False):
-        super(ObjectStateSensor, self).__init__(parent, config)
+        super(ForceTorqueSensor, self).__init__(parent, config)
 
         self.uid = parent.uid
         self.frame_id = parent.get_frame_id(config.get('frame')) if 'frame' in config else -1
