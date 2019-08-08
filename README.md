@@ -41,11 +41,11 @@ while True:
 ```
 ### Config Files:
 
-To set up your environment you'll need to write own config file (or just adapt one of the [examples](https://github.com/ascentai/robo-gym/tree/master/examples)). Config files are yaml files that contain all the information DIYGym requires to describe an environment including what objects it should contain, how they should behave and how a learning agent can interact with them.
+To set up your environment you'll need to write own config file (or just adapt one of the [examples](https://github.com/ascentai/diy-gym/tree/master/examples)). Config files are yaml files that contain all the information DIYGym requires to describe an environment including what objects it should contain, how they should behave and how a learning agent can interact with them.
 
 The file itself contains any number of top level items called `model`s. A model declares an object that will be spawned in the simulation environment. DIYGym identifies models in the config file as yaml dictionaries that contain an item with the key `model`; the value of which should be a file path to a URDF describing the geometry of the object to be spawned. Note that DIYGym will search for URDFs in the data folder of this package, the pybullet data folder or you can also just specify the absolute path directly in the config file. There are a few additional params that can be supplied to a model to describe its pose, scale etc (see `model.py` for more).
 
-To see what this looks like, let's create an environment in which a Jaco robot arm sits on a table in front of a tiny R2D2 robot using the following config file:
+To see what this looks like, let's create an environment in which a robot robot arm sits on a table in front of a tiny R2D2 robot using the following config file:
 
 ```yaml
 plane:
@@ -101,9 +101,9 @@ Similar to models, add-ons are identified in the config file by DIYGym as being 
 
 DIYGym has a bunch of add-ons built-in to define common sensors, actuators and reward signals used in RL; if you find the built-in set of add-ons are lacking, you can pretty easily add your own too (more on that below). 
 
-To see how this all works, let's add a few add-ons to our Jaco environment to make it a little more functional. Specifically, we'll modify the environment such that an agent can learn to pick up the R2D2 with the Jaco arm while minimising the joint torque expended in doing so. The updated config file will look like this:
+To see how this all works, let's add a few add-ons to our robot environment to make it a little more functional. Specifically, we'll modify the environment such that an agent can learn to pick up the R2D2 with the Jaco arm while minimising the joint torque expended in doing so. The updated config file will look like this:
 ```yaml
-max_episode_steps: 50
+max_episode_steps: 500
 
 plane:
     model: plane.urdf
@@ -115,12 +115,13 @@ table:
 r2d2:
     model: r2d2.urdf
     xyz: [0.1, 0.5, 0.7]
-    rpy: [0.0, 0.0, 3.1415]
+    rpy: [0.0, 0.0, 3.14]
     scale: 0.1
 
     arm_camera:
         addon: camera
         frame: left_tip_joint
+        rpy: [0.0, 3.14, 0.0]
         resolution: [200, 200]
 
 robot:
@@ -128,24 +129,33 @@ robot:
     xyz: [0.0, 0.0, 0.65]
 
     controller:
-        addon: position_controller
+        addon: ik_controller
         rest_position: [0.0, 2.9, 0.0, 1.3, 4.2, 1.4, 0.0, 1.0, 1.0, 1.0]
-        end_effector_frame: j2s7s300_joint_end_effector
-
-    grab_r2d2:
-        addon: reach_target
-        target_position: [0.1, 0.5, 0.7]
-        frame: j2s7s300_joint_end_effector
+        end_effector: j2s7s300_joint_end_effector
 
     lazy_robot:
         addon: electricity_cost
+        xyz: [0.1,0.1,0.1]
+
+grab_r2d2:
+    addon: reach_target
+    source_model: robot
+    source_frame: j2s7s300_joint_end_effector
+    target_model: r2d2
+
+where_is_r2d2:
+    addon: object_state_sensor
+    source_model: robot
+    source_frame: j2s7s300_joint_end_effector
+    target_model: r2d2
 ```
 
 These additions will do the following:
-* `controller` attached to the jaco arm will allow an agent to control the 3D pose of its end effector. 
+* `controller` attached to the robot arm will allow an agent to control the 3D pose of its end effector. 
 * `arm_camera` will capture RGB and depth from the protruding arm of R2D2 and add those to the `observations` dictionary
-* `grab_r2d2` will entice agents to pick up the R2D2 by calculating a penalty for the distance between it and the Jaco's end effector.
-* `lazy_robot` will calculate a penalty for the amount of joint torque currently being applied by the jaco and this penalty will be included in the reward value returned by `step`
+* `where_is_r2d2` will measure the distance from the end effector of the robot arm to the r2d2 and add these values to the `observations` dictionary
+* `grab_r2d2` will entice agents to pick up the R2D2 by calculating a penalty for the distance between it and the robot's end effector.
+* `lazy_robot` will calculate a penalty for the amount of joint torque currently being applied by the robot and this penalty will be included in the reward value returned by `step`
 
 All this information is automatically reflected in DIYGym's action/observation spaces, as well as in the dictionaries it returns `step` and `reset`.
 
@@ -153,41 +163,41 @@ If we now instantiate a new DIYGym passing in this updated config file above we'
 
 ![jaco_smash](https://user-images.githubusercontent.com/38680667/51458026-0dc82b00-1d97-11e9-9c1f-6d63f73ccaf2.gif)
 
-The objects returned by `step` will no longer be empty, but will be nested dictionaries keyed according to first the model name then the name of the addon that generated the corresponding piece of data. In the case of the updated Jaco environment, these dictionaries will have the following structure:
+The objects returned by `step` will no longer be empty, but will be nested dictionaries keyed according to first the model name then the name of the addon that generated the corresponding piece of data. In the case of the updated robot environment, these dictionaries will have the following structure:
 ```
 action
 |---robot
     |---controller
-        |---orientation <class 'numpy.ndarray'>
-        |---position <class 'numpy.ndarray'>
+        |---linear <class 'numpy.ndarray'>
+        |---rotation <class 'numpy.ndarray'>
 ```
 ```
 observation
-|---robot
-|   |---grab_r2d2
-|       |---achieved_position <class 'numpy.ndarray'>
-|       |---target_position <class 'numpy.ndarray'>
+|---env_name
+|   |---where_is_r2d2
+|       |---position <class 'numpy.ndarray'>
 |---r2d2
     |---arm_camera
         |---depth <class 'numpy.ndarray'>
         |---rgb <class 'numpy.ndarray'>
 ```
-`reward` and `terminal` are also represented by dictionaries which is a slight departure from the usual gym interface. If you'd rather all their fields be combined you can set the config `sum_rewards`, `terminal_if_any` or `terminal_if_all` to true in the top level of the config file (see [examples/ur_high_5](https://github.com/ascentai/robo-gym/tree/master/examples/ur_high_5) for an example).
+`reward` and `terminal` are also represented by dictionaries which is a slight departure from the usual gym interface. If you'd rather all their fields be combined you can set the config `sum_rewards`, `terminal_if_any` or `terminal_if_all` to true in the top level of the config file (see [examples/ur_high_5](https://github.com/ascentai/diy-gym/tree/master/examples/ur_high_5) for an example).
 
 ```
 reward
 |---robot
-    |---lazy_robot <class 'float'>
+|   |---lazy_robot <class 'float'>
+|---env_name
     |---grab_r2d2 <class 'float'>
 ```
 ```
 terminal
-|---environment
+|---env_name
 |    |---episode_timer <class 'bool'>
-|
-|---robot
-    |---grab_r2d2 <class 'bool'>
+|    |---grab_r2d2 <class 'bool'>
 ```
+
+If you want to try out this environment for yourself, take a look at the example [from_the_readme](https://github.com/ascentai/diy-gym/tree/master/examples/from_the_readme).
 
 ### Writing Your Own Addons:
 
@@ -214,17 +224,17 @@ For an actual example of how to add a addon to DIYGym, check out the [drone_pilo
 
 It's best to work out of a conda environment. If you haven't already, download and install [conda](https://www.anaconda.com/download/). Once you're done, make yourself an environment using python3.5 and activate it like so:
 ```
-conda create --name robo-gym python=3.5
-source activate robo-gym
+conda create --name diy-gym python=3.5
+source activate diy-gym
 ```
 Now navigate to wherever you cloned DIYGym and install its requirements followed by the DIYGym itself:
 ```
-cd $PATH_TO_ROBOGYM
+cd $PATH_TO_DIYGYM
 pip install -r requirements.txt
 pip install -e .
 ```
 To test your installation, you can run any of the environments in the examples folder:
 ```
-cd $PATH_TO_ROBOGYM/examples/ur_high_5
+cd $PATH_TO_DIYGYM/examples/ur_high_5
 python ur_high_5.py
 ```

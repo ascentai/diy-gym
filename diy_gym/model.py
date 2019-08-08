@@ -3,7 +3,6 @@ import pybullet_data
 import os
 from gym import spaces
 from collections import OrderedDict
-
 from .addons.addon import AddonFactory, Receptor
 
 urdf_path = ['', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/'), pybullet_data.getDataPath()]
@@ -35,9 +34,7 @@ class Model(Receptor):
             parent_frame_id = parent.get_frame_id(config.get('parent_frame')) if 'parent_frame' in config else -1
             child_frame_id = self.get_frame_id(config.get('child_frame')) if 'child_frame' in config else -1
 
-            pose = p.getLinkState(parent.uid,
-                                  parent_frame_id)[:2] if parent_frame_id != -1 else p.getBasePositionAndOrientation(
-                                      parent.uid)[:2]
+            pose = p.getLinkState(parent.uid, parent_frame_id)[:2] if parent_frame_id != -1 else p.getBasePositionAndOrientation(parent.uid)[:2]
             p.resetBasePositionAndOrientation(self.uid, *pose)
 
             p.createConstraint(parent.uid, parent_frame_id, self.uid, child_frame_id, p.JOINT_FIXED, [0, 0, 1],
