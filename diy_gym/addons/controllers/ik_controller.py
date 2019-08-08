@@ -38,7 +38,6 @@ class InverseKinematicsController(Addon):
 
     def update(self, action):
         self.target_state = [np.array(s) for s in p.getLinkState(self.uid, self.end_effector_joint_id)]
-
         self.target_state[0] += action['linear']
 
         kwargs = {}
