@@ -1,11 +1,12 @@
 import pybullet as p
+import numpy as np
 
 from gym import spaces
 from diy_gym.addons.addon import Addon
 
 class AdmittanceController(Addon):
     def __init__(self, parent, config):
-        super(ForceController, self).__init__(parent, config)
+        super(AdmittanceController, self).__init__(parent, config)
 
         self.uid = parent.uid
 
