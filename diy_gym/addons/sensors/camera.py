@@ -6,6 +6,23 @@ from diy_gym.addons.addon import Addon
 
 
 class Camera(Addon):
+    """Captures RGB, depth and segmentation images from the perspective of a model or fixed in the world frame.
+
+    Configs:
+        clipping_boundaries (list of float, optional, [0.1, 100]): the boundaries in the z-direction of the volume
+            captured by the depth images (i.e objects at a distance that is outside these boundaries won't
+            appear in the depth image)
+        field_of_view (float, optional, 70): defines the perspective matrix of the camera
+        frame (str, optional): the frame on the parent model to which the camera will be attached
+            (defaults to the base frame)
+        resolution (list of float, optional, [640, 480]): defines the width and height (respectively) of the
+            images captured by the camera
+        xyz (list of float, optional, [0,0,0]): the offset relative to the `frame` at which to spawn the camera
+        rpy (list of float, optional, [0,0,0]): the orientation relative to the `frame` at which to spawn the camera
+            expressed in euler angles
+        use_depth (bool, optional, False): whether to include depth images in observations
+        use_segmentation_mask (bool, optional, False): whether to include segmentation images in observations
+    """
     def __init__(self, parent, config):
         super(Camera, self).__init__(parent, config)
 

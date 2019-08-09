@@ -5,6 +5,13 @@ from diy_gym.addons.addon import Addon
 
 
 class JointStateSensor(Addon):
+    """Measures the position, velocity and torque at each of the joints of the parent model.
+
+    Configs:
+        joints (list of str, optional): a list of joint names to measure from (default is all joints)
+        include_velocity (bool, optional): whether to include joint velocity in measurements (default is False)
+        include_effort (bool, optional): whether to include joint effort (aka torque) in measurements (default is False)
+    """
     def __init__(self, parent, config):
         super(JointStateSensor, self).__init__(parent, config)
 
