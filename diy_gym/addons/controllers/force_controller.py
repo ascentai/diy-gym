@@ -2,61 +2,51 @@ import pybullet as p
 
 from gym import spaces
 from diy_gym.addons.addon import Addon
-import numpy as np
 
-class ForceController(Addon):
-    """JointController
-    """
+class AdmittanceController(Addon):
     def __init__(self, parent, config):
         super(ForceController, self).__init__(parent, config)
 
         self.uid = parent.uid
 
-        joint_info = [p.getJointInfo(self.uid, i) for i in range(p.getNumJoints(self.uid))]
-        joints = [info[1].decode('UTF-8') for info in joint_info]
+        self.end_frame = parent.get_frame_id(config.get('end_effector'))
+        self.kp = config.get('p_gain', 0.001)
+        self.kd = config.get('d_gain', 0.01)
 
-        self.joint_ids = [info[0] for info in joint_info if info[1].decode('UTF-8') in joints and info[3] > -1]
+        joint_info = [p.getJointInfo(self.uid, i) for i in range(p.getNumJoints(self.uid))]
+        self.joint_ids = [info[0] for info in joint_info if info[0] <= self.end_frame and info[3] > -1]
+
         self.rest_position = config.get('rest_position', [0] * len(self.joint_ids))
 
-        self.torque_limit = [p.getJointInfo(self.uid, joint_id)[10] for joint_id in self.joint_ids]
-        self.action_space = spaces.Box(-0.5, 0.5, shape=(len(self.joint_ids), ), dtype='float32')
+        self.action_space = spaces.Dict({
+            'force': spaces.Box(-5, 5, shape=(3,), dtype='float32'),
+            'torque': spaces.Box(-1., 1., shape=(3,), dtype='float32')})
 
-    def wrench2torque(self, wrench):
-        joint_info = [p.getJointInfo(self.uid, i) for i in range(p.getNumJoints(self.uid))]
-        end_effector_joint_id = [info[1].decode('UTF-8') for info in joint_info].index('ee_fixed_joint')
-        link_state = p.getLinkState(self.uid, end_effector_joint_id, computeForwardKinematics=True,
-                                    computeLinkVelocity=False)
-        local_position = link_state[2]
-        joint_states = p.getJointStates(self.uid, self.joint_ids)
-        joint_position = [state[0] for state in joint_states]
-        joint_velocity = [state[1] for state in joint_states]
-        zero_vec = [0, 0, 0, 0, 0, 0]
-        linear_jacobian, angular_jacobian = np.array(
-            p.calculateJacobian(
-                bodyUniqueId=self.uid,
-                linkIndex=end_effector_joint_id,
-                localPosition=local_position,
-                objPositions=joint_position,
-                objVelocities=joint_velocity,
-                objAccelerations=zero_vec)
-        )
-        jacobian = np.vstack((linear_jacobian, angular_jacobian))
-        grav_component = p.calculateInverseDynamics(self.uid, zero_vec, zero_vec, zero_vec)
-        return np.dot(jacobian.transpose(), wrench) + grav_component
+        self.reset()
+
+        p.setJointMotorControlArray(self.uid, self.joint_ids, p.VELOCITY_CONTROL, forces=[0]*len(self.joint_ids))
 
     def reset(self):
         for joint_id, angle in zip(self.joint_ids, self.rest_position):
             p.resetJointState(self.uid, joint_id, angle)
 
     def update(self, action):
-        kwargs = {}
+        joint_positions = [state[0] for state in p.getJointStates(self.uid, self.joint_ids)]
+        joint_velocities = [state[1] for state in p.getJointStates(self.uid, self.joint_ids)]
+        n_joints = len(joint_positions)
 
-        joint_torques = self.wrench2torque(action)
+        J = p.calculateJacobian(
+            self.uid,
+            self.end_frame,
+            [0.,0.,0.],
+            joint_positions,
+            [0.]*n_joints,
+            [0.]*n_joints)
 
-        print([1.0] * len(action))
-        p.setJointMotorControlArray(self.uid,
-                                    self.joint_ids,
-                                    p.TORQUE_CONTROL,
-                                    forces=joint_torques,
-                                    positionGains=[0.03] * len(action),
-                                    velocityGains=[1.0] * len(action))
+        T_g = p.calculateInverseDynamics(self.uid, joint_positions, [0.]*n_joints, [0.]*n_joints)
+        T_cmd = action['force'].dot(np.array(J[0])) + action['torque'].dot(np.array(J[1]))
+
+        T_pos = (self.rest_position - np.array(joint_positions)) * self.kp
+        T_vel = (np.array(joint_velocities)) * -self.kd
+
+        p.setJointMotorControlArray(self.uid, self.joint_ids, p.TORQUE_CONTROL, forces=T_cmd+T_g+T_pos+T_vel)
