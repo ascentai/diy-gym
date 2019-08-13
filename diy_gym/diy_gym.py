@@ -29,14 +29,15 @@ class DIYGym(gym.Env, Receptor):
 
     Configs:
         max_episode_steps (int, optional): the number of timesteps to allow per episode (disabled by default)
-        hot_start (bool, optional): number of simulation steps to take after a reset before beginning an episode,
-            this gives models that are floating at t=0 time to come to rest before the episode begins (default is 1)
-        render (bool, optional): whether to render the simulation in a GUI (default is True)
-        camera_distance (int, optional): distance of the viewport of the GUI from the target position (defined below)
-        camera_pitch (int, optional): the pitch of viewport of the GUI
+        hot_start (bool, optional, 1): number of simulation steps to take after a reset before beginning an episode,
+            this gives models that are floating at t=0 time to come to rest before the episode begins
+        render (bool, optional, True): whether to render the simulation in a GUI
+        camera_distance (float, optional, 2.0): distance of the viewport of the GUI from the target position (defined below)
+        camera_pitch (float, optional, -41): the pitch of viewport of the GUI
+        camera_yaw (float, optional, 180): the yaw of viewport of the GUI
         camera_target_position (list of ints, optional): a point in world coordinates that will be in the center of
             the GUI viewport
-        timestep (float, optional, 1/240.): length of wall time per simulation timestep (default is 1/240s)
+        timestep (float, optional, 1/240.): length of wall time per simulation timestep
         solver_iterations (int, optional, 150): number of iterations of the solver per timestep
             (it's best not to change this without a good reason)
         update_freq (float, optional, 100.): frequency of the updates made by DIY Gym through calls to step()
@@ -47,7 +48,7 @@ class DIYGym(gym.Env, Receptor):
         flatten_observations (bool, optional, False): collapses the observations dictionary into a numpy array by
             concatenating each element
         flatten_actions (bool, optional, False): if True, the step function will expect a single numpy array containing
-            the same number of actions as specified in the environment's action space (default is False)
+            the same number of actions as specified in the environment's action space
     """
     def __init__(self, config_file):
         gym.Env.__init__(self)
