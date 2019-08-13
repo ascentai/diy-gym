@@ -5,6 +5,18 @@ from diy_gym.addons.addon import Addon
 
 
 class InverseKinematicsController(Addon):
+    """Controls a robot arm or similar kinematic chain to place a designed end effector frame at a desired translation and rotation.
+
+    Configs:
+        end_effector (str): name of the frame on the parent model that will be controlled to the desired pose
+        rest_position (list of float, optional): a set of joint angles representing a nominal position for the
+            robot arm. These are used by the addon to reset the arm and also to find an IK solution
+        position_gain (float, optional, 0.015): the gain used to calculate the motor torque in order to maintain
+            the target joint angle.
+        velocity_gain (float, optional, 1.0): the gain used to calculate the motor torque in order to maintain
+            the target joint velocity.
+        use_orientation (bool, optional, False): whether to command the end effector's orientation or just its position
+    """
     def __init__(self, parent, config):
         super(InverseKinematicsController, self).__init__(parent, config)
 

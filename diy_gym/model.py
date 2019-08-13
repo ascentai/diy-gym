@@ -9,6 +9,42 @@ urdf_path = ['', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data/
 
 
 class Model(Receptor):
+    """Models represent any object to be spawned in the simulation environment.
+
+    Models are described using a URDF so anything for which you can find one of those can be spawned and interacted with in the
+    gym. Models, along with the environment itself serve as a receptor onto which addons can be attached. As such models themselves
+    don't implement a whole lot of functionality, they mainly allow the physical characteristics of the model to be configured.
+
+    Note that it's also possible to attach a model to another model. An example of a config file that does this is as follows:
+    ```
+    robot_arm:
+        model: ur5/ur5_robot.urdf
+
+        child_model:
+            model: two_fingered_gripper.urdf
+            parent_frame: ee_fixed_joint
+            xyz: [0,0,0.01] # attach the gripper at a 1cm offset along the z-axis of the end effector frame
+    ```
+
+    Args:
+        config_file (string): A file path pointing to the configuration file describing the environment
+        parent (:obj:Model, optional): if this model is a child of another model then parent will be a reference to that model
+
+
+    Configs:
+        model (str): a path to a URDF file relative to any of the directories listed under `urdf_path` above.
+        xyz (list of floats, optional, [0,0,0]): the position at which to spawn the model
+        rpy (list of floats, optional, [0,0,0]): the orientation at which to spawn the model expressed in euler angles
+        scale (float, optional, 1): resizes the model (i.e setting to 2 will double its size)
+        use_fixed_base (bool, optional, False): if True, the model will be fixed in space and not subject to gravity
+            or collisions
+        mass (list of floats, optional): overrides the mass of the model defined in the URDF
+        color (list of floats, optional): overrides the color of the model defined in the URDF
+        parent_frame (str, optional): if this model is a child of another model then parent_frame defines
+            the frame on the parent that this model will be attached to (default is the parent's base frame)
+        child_frame (str, optional): if this model is a child of another model then child_frame defines the
+            frame on this model that will be coupled to the parent frame (default is the base frame)
+    """
     def __init__(self, config, parent=None):
         Receptor.__init__(self)
 
