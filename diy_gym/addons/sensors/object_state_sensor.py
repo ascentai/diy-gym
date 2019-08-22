@@ -13,7 +13,7 @@ class ObjectStateSensor(Addon):
 
         self.source_frame_id = self.source_model.get_frame_id(
             config.get('source_frame')) if 'source_frame' in config else -1
-        self.target_frame_id = self.source_model.get_frame_id(
+        self.target_frame_id = self.target_model.get_frame_id(
             config.get('target_frame')) if 'target_frame' in config else -1
 
         self.include_rotation = config.get('include_rotation', False)
