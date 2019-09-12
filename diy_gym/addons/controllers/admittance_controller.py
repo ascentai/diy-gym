@@ -18,6 +18,7 @@ class AdmittanceController(Addon):
         self.joint_ids = [info[0] for info in joint_info if info[0] <= self.end_frame and info[3] > -1]
 
         self.rest_position = config.get('rest_position', [0] * len(self.joint_ids))
+        self.target_pose = np.array(config.get('target_pose', self.rest_position))
 
         self.action_space = spaces.Dict({
             'force': spaces.Box(-5, 5, shape=(3,), dtype='float32'),
@@ -47,7 +48,7 @@ class AdmittanceController(Addon):
         T_g = p.calculateInverseDynamics(self.uid, joint_positions, [0.]*n_joints, [0.]*n_joints)
         T_cmd = action['force'].dot(np.array(J[0])) + action['torque'].dot(np.array(J[1]))
 
-        T_pos = (self.rest_position - np.array(joint_positions)) * self.kp
+        T_pos = (self.target_pose - np.array(joint_positions)) * self.kp
         T_vel = (np.array(joint_velocities)) * -self.kd
 
         p.setJointMotorControlArray(self.uid, self.joint_ids, p.TORQUE_CONTROL, forces=T_cmd+T_g+T_pos+T_vel)
