@@ -11,6 +11,7 @@ class AdmittanceController(Addon):
         self.uid = parent.uid
 
         self.end_frame = parent.get_frame_id(config.get('end_effector'))
+        self.offset_admittance_point = config.get('offset_admittance_point', [0., 0., 0.])
         self.kp = config.get('p_gain', 0.001)
         self.kd = config.get('d_gain', 0.01)
 
@@ -40,7 +41,7 @@ class AdmittanceController(Addon):
         J = p.calculateJacobian(
             self.uid,
             self.end_frame,
-            [0.,0.,0.],
+            self.offset_admittance_point,
             joint_positions,
             [0.]*n_joints,
             [0.]*n_joints)
